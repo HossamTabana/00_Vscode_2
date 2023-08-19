@@ -20,6 +20,13 @@
 13. [Complete code for creating Chatbot](#complete-code-for-creating-chatbot)
 14. [Reading Large CSV files in Pandas](#reading-large-csv-files-in-pandas)
 15. [Reading Large CSV files in Pandas and adjust Data Type](#reading-large-csv-files-in-pandas-and-adjust-data-type)
+16. [Pandas > Filter and Convert Datetime](#pandas--filter-and-convert-datetime)
+17. [SQL > Explain Locate and Position](#sql--explain-locate-and-position)
+18. [AWS > Position Function](#aws--position-function)
+19. [AWS > SUBSTR and LENGTH](#aws--substr-and-length)
+20. [Convert QVD to Parquet](#convert-qvd-to-parquet)
+21. [Benefits of Parquet file](#benefits-of-parquet-file)
+22. [Pandas > Read Large Parquet files](#pandas--read-large-parquet-files)
 
 
 ### Merge two dataframe:
@@ -598,4 +605,340 @@ for chunk in pd.read_csv('large_file.csv', dtype=dtypes, usecols=columns_to_read
 
 # Do further processing on the DataFrame as needed
 ```
+### Pandas > Filter and Convert Datetime:
+> In this example, we first filter out the rows where the SCR_EOV_ID column is equal to -1 using the .loc method and extract the values using .values. Then we convert the filtered values to datetime format using pd.to_datetime(). Finally, we replace the original SCR_EOV_ID column with the filtered and converted values using .loc
+```py
+import pandas as pd
+
+# create a sample dataframe with a column of string dates
+df = pd.DataFrame({'SCR_EOV_ID': ['20230201', '-1', '20230203', '-1']})
+
+# filter out rows with '-1' in the SCR_EOV_ID column and extract the values
+scr_eov_id = df.loc[df['SCR_EOV_ID'] != '-1', 'SCR_EOV_ID'].values
+
+# convert the filtered values to datetime format
+scr_eov_id = pd.to_datetime(scr_eov_id, format='%Y%m%d')
+
+# replace the original column with the filtered and converted values
+df.loc[df['SCR_EOV_ID'] != '-1', 'SCR_EOV_ID'] = scr_eov_id
+
+# display the resulting dataframe
+print(df)
+```
+### SQL > Explain Locate and Position:
+**SQL:**
+> In SQL (Structured Query Language), the LOCATE() function is used to search for a substring within a string and returns the position of the first occurrence of the substring within the string.
+The syntax of the LOCATE() function is as follows:
+```sql
+LOCATE(substring, string, start_position)
+```
+> Here, substring is the substring that you want to search for, string is the string that you want to search within, and start_position is an optional argument that specifies the position within the string where the search should start. If start_position is not provided, the search will start from the beginning of the string.
+The function returns an integer value that represents the position of the first occurrence of the substring within the string. If the substring is not found within the string, the function returns 0.
+For example, consider the following SQL query:
+```sql
+SELECT LOCATE('world', 'Hello world')
+```
+> The result of this query would be 7, because the substring "world" appears at position 7 within the string "Hello world".
+You can also use the LOCATE() function in conjunction with other SQL functions, such as SUBSTRING(), to extract parts of a string based on the position of a substring.
+---
+**AWS:**
+> In AWS Athena, the equivalent function to the LOCATE() function in SQL is the POSITION() function. The syntax of the POSITION() function is similar to that of LOCATE(), but with some differences.
+The syntax of the POSITION() function in Athena is:
+```sql
+POSITION(substring IN string)
+```
+> Here, substring is the substring that you want to search for, and string is the string that you want to search within.
+The function returns an integer value that represents the position of the first occurrence of the substring within the string. If the substring is not found within the string, the function returns 0.
+For example, consider the following query:
+```sql
+SELECT POSITION('world' IN 'Hello world')
+```
+> The result of this query would be 7, because the substring "world" appears at position 7 within the string "Hello world".
+Note that unlike the LOCATE() function in SQL, the POSITION() function in Athena does not support an optional third argument to specify the starting position of the search. If you need to start the search at a specific position, you can use the SUBSTR() function to extract a substring of the original string starting at the desired position, and then apply the POSITION() function to the extracted substring.
+### AWS > Position Function:
+```sql
+SELECT
+  CASE 
+    WHEN POSITION(UPPER(TRIM(gf.GEO_HIER_STRING)) IN UPPER(TRIM(g.GEO_HIER_STRING))) = 1 
+    THEN 1 
+    ELSE 0 
+  END AS "TEU Confirmed Total"
+FROM
+  table_name gf
+  INNER JOIN table_name g ON gf.column_name = g.column_name
+```
+### AWS > SUBSTR and LENGTH :
+```sql
+SELECT 
+  geo_string, 
+  teu_allocation,
+  CASE 
+    WHEN LENGTH(geo_string) = 1 THEN 
+      SUM(CASE WHEN LENGTH(geo_string) = 3 THEN teu_allocation ELSE 0 END) OVER (PARTITION BY SUBSTR(geo_string, 1, 1), dpvoyage, allocation_scope, relation)
+    ELSE 
+      NULL 
+  END AS sum_teu_allocation
+FROM my_table;
+```
+### Convert QVD to Parquet:
+```bash
+pip install qreader pyarrow
+```
+> This code will first read the QVD file into a DataFrame using the qreader package, then write the DataFrame to a CSV file. After that, it reads the CSV file into a DataFrame and writes the DataFrame to a Parquet file using the pyarrow engine.
+Please note that this approach requires enough memory to read the entire QVD file into a DataFrame. If memory is a concern, you may need to split the QVD file into smaller parts using QlikView or Qlik Sense, then convert each part to a CSV file and subsequently to a Parquet file. Once you have the data in Parquet format, you can read it in chunks using Pandas, as shown in my previous response.
+```py
+import pandas as pd
+import qreader
+
+# Set your input file path, output CSV file path, and output Parquet file path
+input_qvd_file = r"\\fs-bi-user\FS_User\Shared_Files_User\BA\Shipment\fact_ms_shp_cargo_revenue_combined.qvd"
+output_csv_file = r"\\fs-bi-user\FS_User\Shared_Files_User\BA\Shipment\fact_ms_shp_cargo_revenue_combined.csv"
+output_parquet_file = r"\\fs-bi-user\FS_User\Shared_Files_User\BA\Shipment\fact_ms_shp_cargo_revenue_combined.parquet"
+
+# Read the QVD file into a DataFrame
+df = qreader.read(input_qvd_file)
+
+# Write the DataFrame to a CSV file
+df.to_csv(output_csv_file, index=False)
+
+# Read the CSV file into a DataFrame
+df_csv = pd.read_csv(output_csv_file)
+
+# Write the DataFrame to a Parquet file
+df_csv.to_parquet(output_parquet_file, index=False, engine='pyarrow')
+```
+**Below is another one using Chuck:**
+```py
+import pandas as pd
+
+# Set your file path and chunk size
+file_path = r"\\fs-bi-user\FS_User\Shared_Files_User\BA\Shipment\fact_ms_shp_cargo_revenue_combined.parquet"
+chunksize = 1000  # Choose an appropriate chunk size
+
+# Initialize an empty DataFrame to store the combined data
+combined_df = pd.DataFrame()
+
+# Read the Parquet file in chunks and concatenate them into the combined_df DataFrame
+for chunk in pd.read_parquet(file_path, engine="pyarrow", chunksize=chunksize):
+    combined_df = pd.concat([combined_df, chunk])
+```
+### Benefits of Parquet file:
+> Parquet is a file format designed for efficient columnar storage and processing of data. Here are some key points to know about Parquet:
+
+- Parquet stores data in a columnar format, which means that all values of a particular column are stored together, making it easier and faster to read and process specific columns of data.
+- Parquet uses compression algorithms to reduce file size, making it easier to transfer and store large amounts of data.
+- Parquet is an open-source format that is widely used in big data processing frameworks like Apache Hadoop, Apache Spark, and Apache Arrow.
+- Some of the benefits of using Parquet include improved query performance, lower storage costs, and better compatibility with distributed systems.
+
+In general, if you have large amounts of data that you need to store and process efficiently, converting it to the Parquet format can be a good option. The columnar storage and compression features of Parquet make it particularly well-suited for big data applications.
+### Pandas > Read Large Parquet files:
+```py
+import pandas as pd
+import pyarrow.parquet as pq
+
+file_path = 'your_large_parquet_file.parquet'
+
+# Get the number of row groups in the Parquet file
+parquet_file = pq.ParquetFile(file_path)
+n_row_groups = parquet_file.num_row_groups
+
+# Read and process the Parquet file one row group at a time
+for row_group_idx in range(n_row_groups):
+    # Read a single row group
+    table = parquet_file.read_row_group(row_group_idx)
+    
+    # Convert the Arrow Table to a Pandas DataFrame
+    df_chunk = table.to_pandas()
+
+    # Perform your operations on the chunk, e.g., filtering, aggregation, etc.
+    print(df_chunk.head())
+```
+> Given that you have multiple large Parquet files, you can use the glob library to find all the matching file names and then read them one by one using the pyarrow.parquet library, as shown in the previous example. To optimize memory usage, you can perform your processing operations on each file individually and then concatenate the results.
+Here's the code to read and process multiple large Parquet files:
+```py
+import glob
+import pandas as pd
+import pyarrow.parquet as pq
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Initialize an empty list to store the results
+results = []
+
+# Read and process each Parquet file
+for file_path in file_list:
+    # Get the number of row groups in the Parquet file
+    parquet_file = pq.ParquetFile(file_path)
+    n_row_groups = parquet_file.num_row_groups
+    
+    # Read and process the Parquet file one row group at a time
+    for row_group_idx in range(n_row_groups):
+        # Read a single row group
+        table = parquet_file.read_row_group(row_group_idx)
+        
+        # Convert the Arrow Table to a Pandas DataFrame
+        df_chunk = table.to_pandas()
+
+        # Perform your operations on the chunk, e.g., filtering, aggregation, etc.
+        # For example, let's filter the data based on a condition
+        filtered_chunk = df_chunk[df_chunk['column_name'] > some_value]
+
+        # Append the filtered_chunk to the results list
+        results.append(filtered_chunk)
+
+# Concatenate the results into a single Pandas DataFrame
+result_df = pd.concat(results, ignore_index=True)
+```
+> Replace 'column_name' with the appropriate column name and some_value with the desired value for your filtering condition. You can also replace the filtering operation with other operations such as aggregation or transformation.
+Keep in mind that this approach reads and processes each row group individually, which can help with memory management. However, the final DataFrame, result_df, will still hold the concatenated results in memory. If the result is too large to fit in memory, you may need to perform your operations in a more incremental manner or use out-of-core processing techniques such as Dask.
+---
+> If you want to process large Parquet files in a more incremental manner or use out-of-core processing techniques, Dask is a great option. Dask is a parallel computing library that integrates well with Pandas and can handle large datasets that don't fit in memory.
+Here's how you can read and process multiple large Parquet files using Dask:
+```sh
+pip install dask[delayed] dask[dataframe] dask-ml
+```
+```py
+import dask.dataframe as dd
+import glob
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Read the Parquet files using Dask
+ddf = dd.read_parquet(file_list, engine='auto')
+
+# Perform operations on the Dask DataFrame (similar to Pandas DataFrame)
+# For example, let's filter the data based on a condition
+filtered_ddf = ddf[ddf['column_name'] > some_value]
+
+# Alternatively, you can perform other operations such as aggregation
+# result = ddf.groupby('column_name').mean()
+
+# Compute the result and convert it to a Pandas DataFrame
+result_pd = filtered_ddf.compute()
+
+print(result_pd.head())
+```
+> Replace 'column_name' with the appropriate column name and some_value with the desired value for your filtering condition. You can also replace the filtering operation with other operations such as aggregation or transformation.
+Dask will read and process the data in parallel, which can be more efficient than processing the data in chunks with Pandas. Moreover, Dask can handle larger-than-memory datasets, allowing you to work with the data without running out of memory.
+Keep in mind that the final result, result_pd, will still hold the computed data in memory as a Pandas DataFrame. If the result is too large to fit in memory, you can perform incremental writes to disk, use Dask's out-of-core capabilities, or scale your Dask processing to a cluster.
+---
+> If you need to read the entire content of multiple large Parquet files and concatenate them into a single Dask DataFrame, you can follow these steps:
+```sh
+$pip install dask[delayed] dask[dataframe] dask-ml
+```
+```py
+import dask.dataframe as dd
+import glob
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Read the Parquet files using Dask
+ddf = dd.read_parquet(file_list, engine='auto')
+
+# Perform any operations you need on the Dask DataFrame, if required
+# For example: result_ddf = ddf.groupby('column_name').mean()
+
+# If you don't need to perform any operations, you can skip the above step
+result_ddf = ddf
+
+# Compute the result and convert it to a Pandas DataFrame (if it fits in memory)
+result_pd = result_ddf.compute()
+
+print(result_pd.head())
+```
+> Keep in mind that the final result, result_pd, will still hold the computed data in memory as a Pandas DataFrame. If the result is too large to fit in memory, consider performing incremental writes to disk, using Dask's out-of-core capabilities, or scaling your Dask processing to a cluster.
+---
+> If you need to write the final DataFrame to disk, you can use Dask's to_parquet function:
+```py
+# Save the Dask DataFrame to a Parquet file (or multiple files, if the dataset is partitioned)
+result_ddf.to_parquet('output_parquet_file.parquet', engine='auto')
+```
+> If you want to read multiple large Parquet files one by one and then combine them into a single Pandas DataFrame (assuming the combined data fits in memory), you can do the following:
+```py
+import pandas as pd
+import glob
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Initialize an empty list to store DataFrames
+dataframes = []
+
+# Read and process each Parquet file
+for file_path in file_list:
+    # Read a single Parquet file
+    df = pd.read_parquet(file_path, engine='auto')
+    
+    # Perform any operations on the DataFrame, if needed (e.g., filtering, aggregation)
+    
+    # Append the DataFrame to the list
+    dataframes.append(df)
+
+# Concatenate all the DataFrames into a single DataFrame
+combined_df = pd.concat(dataframes, ignore_index=True)
+```
+> This code reads each Parquet file one by one and appends the resulting DataFrame to a list. Once all files are read, it concatenates them into a single Pandas DataFrame.
+Keep in mind that this approach loads the entire combined data into memory as a single Pandas DataFrame. If the combined data is too large to fit in memory, you should consider using Dask for out-of-core processing or perform incremental writes to disk.
+---
+> Here's an example of how to read multiple large Parquet files one by one, store them in separate DataFrames (df1, df2, ...), and finally combine them into a single DataFrame:
+```py
+import pandas as pd
+import glob
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Initialize a dictionary to store DataFrames
+dataframes = {}
+
+# Read and process each Parquet file
+for i, file_path in enumerate(file_list):
+    # Read a single Parquet file
+    dataframes[f'df{i+1}'] = pd.read_parquet(file_path, engine='auto')
+
+    # Perform any operations on the DataFrame, if needed (e.g., filtering, aggregation)
+
+# Combine all DataFrames into a single DataFrame
+combined_df = pd.concat(dataframes.values(), ignore_index=True)
+```
+> This code reads each Parquet file one by one and stores the resulting DataFrame in a dictionary with keys like df1, df2, etc. Once all files are read, it concatenates the DataFrames in the dictionary into a single Pandas DataFrame.
+Keep in mind that this approach loads the entire combined data into memory as a single Pandas DataFrame. If the combined data is too large to fit in memory, you should consider using Dask for out-of-core processing or perform incremental writes to disk.
+---
+> To read each file into separate DataFrames (df1, df2, etc.), you can use the following code:
+```py
+import pandas as pd
+import glob
+
+# Find all the matching Parquet files
+file_pattern = 'sales_chun*.parquet'
+file_list = glob.glob(file_pattern)
+
+# Initialize a dictionary to store DataFrames
+dataframes = {}
+
+# Read and process each Parquet file
+for i, file_path in enumerate(file_list):
+    # Read a single Parquet file
+    dataframes[f'df{i+1}'] = pd.read_parquet(file_path, engine='auto')
+
+    # Print column names
+    print(f"Column names for {file_path}: {list(dataframes[f'df{i+1}'].columns)}")
+
+# Combine all DataFrames into a single DataFrame
+combined_df = pd.concat(dataframes.values(), ignore_index=True)
+```
+> This code reads each Parquet file one by one, stores the resulting DataFrame in a dictionary with keys like df1, df2, etc., and prints the column names for each file. Once all files are read, it concatenates the DataFrames in the dictionary into a single Pandas DataFrame.
+Keep in mind that this approach loads the entire combined data into memory as a single Pandas DataFrame. If the combined data is too large to fit in memory, you should consider using Dask for out-of-core processing or perform incremental writes to disk.
+
+
+
+
 
