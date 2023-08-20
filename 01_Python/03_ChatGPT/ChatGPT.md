@@ -35,6 +35,11 @@
     - [Back The User Admin works again](#back-the-user-admin-works-again)
     - [allow PowerBI_HQ to only execute the job](#allow-powerbi_hq-to-only-execute-the-job)
     - [Restoring t_board_db to its original state](#restoring-t_board_db-to-its-original-state)
+24. [YouTube Download 1080](#youtube-download-1080)
+    - [YouTube Download 720](#youtube-download-720)
+25. [Setup environment variables in VSCode](#setup-environment-variables-in-vscode)
+    - [Multiple projects within the same workspace in VSCode](#multiple-projects-within-the-same-workspace-in-vscode)
+    - [General .env file that's shared across multiple projects](#general-env-file-thats-shared-across-multiple-projects)
 
 
 ### Merge two dataframe:
@@ -1378,14 +1383,367 @@ Consult: Speak with any other DBAs or admins or check documentation to confirm t
 Backup: Ensure you have backups of your SQL Server and its configurations.
 Caution: If you're ever in doubt about executing a command, especially one that can grant elevated permissions, it's better to hold off and seek clarity.
 Always prioritize the security and integrity of your SQL Server environment.
+### YouTube Download 1080:
+> When you want to download 1080p (or higher) videos using pytube, you need to understand that such resolutions often come in adaptive streams — where video and audio are separate.
+To achieve this, you would need to:
+1. Download the highest resolution video-only stream.
+2. Download the highest quality audio stream.
+3. Merge the two streams together.
+> Here's how you can do that:
+```py
+import os
+from pytube import YouTube
+from pytube.cli import on_progress
+from moviepy.editor import *
 
+def download_highest_quality(youtube_url, destination_folder):
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
 
+    yt = YouTube(youtube_url, on_progress_callback=on_progress)
+    print("Fetching video details...")
+    
+    # Fetch the video-only and audio-only streams.
+    video_stream = yt.streams.filter(only_video=True, file_extension='mp4').order_by("resolution").desc().first()
+    audio_stream = yt.streams.filter(only_audio=True, file_extension='mp4').first()
 
+    print(f"Downloading video stream: {video_stream.resolution}")
+    video_filename = video_stream.download(output_path=destination_folder, filename="video_temp")
+    audio_filename = audio_stream.download(output_path=destination_folder, filename="audio_temp")
+    
+    # Combining video and audio using moviepy
+    video_clip = VideoFileClip(video_filename)
+    audio_clip = AudioFileClip(audio_filename)
+    final_clip = video_clip.set_audio(audio_clip)
+    
+    final_filename = os.path.join(destination_folder, yt.title.replace("/", "-") + ".mp4")
+    final_clip.write_videofile(final_filename)
+    
+    # Remove temporary files
+    os.remove(video_filename)
+    os.remove(audio_filename)
 
+    return f"Download Complete | Saved at {final_filename}"
 
+if __name__ == "__main__":
+    url = "https://youtu.be/At5alroIsic"
+    dest = "./00_downloaded"
+    result = download_highest_quality(url, dest)
+    print(result)
+```
+> This should download the video in 1080p (or the highest available resolution) and merge it with the best available audio stream.
+A few considerations:
+Ensure you have ffmpeg installed on your machine, as moviepy relies on it for video processing tasks.
+Always make sure you have the right to download and use the content from YouTube. Downloading videos can breach YouTube's terms of service.
+---
+> adjusted code that allows downloading multiple videos by looping through a list of URLs:
+```py
+import os
+from pytube import YouTube
+from pytube.cli import on_progress
+from moviepy.editor import *
 
+def download_highest_quality(youtube_url, destination_folder):
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
 
+    yt = YouTube(youtube_url, on_progress_callback=on_progress)
+    print(f"Fetching details for {yt.title}...")
+    
+    # Fetch the video-only and audio-only streams.
+    video_stream = yt.streams.filter(only_video=True, file_extension='mp4').order_by("resolution").desc().first()
+    audio_stream = yt.streams.filter(only_audio=True, file_extension='mp4').first()
 
+    print(f"Downloading video stream: {video_stream.resolution}")
+    video_filename = video_stream.download(output_path=destination_folder, filename="video_temp")
+    audio_filename = audio_stream.download(output_path=destination_folder, filename="audio_temp")
+    
+    # Combining video and audio using moviepy
+    video_clip = VideoFileClip(video_filename)
+    audio_clip = AudioFileClip(audio_filename)
+    final_clip = video_clip.set_audio(audio_clip)
+    
+    final_filename = os.path.join(destination_folder, yt.title.replace("/", "-") + ".mp4")
+    final_clip.write_videofile(final_filename)
+    
+    # Remove temporary files
+    os.remove(video_filename)
+    os.remove(audio_filename)
+
+    return f"Download Complete | Saved at {final_filename}"
+
+if __name__ == "__main__":
+    urls = [
+        "https://youtu.be/GHtX0QXfi6g",
+        "https://youtu.be/At5alroIsic",  # Add more URLs as needed
+    ]
+    dest = "./00_downloaded"
+
+    for url in urls:
+        result = download_highest_quality(url, dest)
+        print(result)
+```
+> I've converted the url variable into a list called urls which contains all the video links you want to download. The program will loop through each URL and download the videos sequentially.
+Just keep adding the YouTube URLs you want to download to the urls list, and the script will handle the rest!
+### YouTube Download 720:
+```py
+import os
+import ssl
+from pytube import YouTube
+from pytube.cli import on_progress
+
+def download_highest_quality(youtube_url, destination_folder):
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
+
+    yt = YouTube(youtube_url, on_progress_callback=on_progress)
+
+    try:
+        print("Fetching video details...")
+        video_stream = sorted(yt.streams.filter(progressive=True, file_extension='mp4'), key=lambda s: s.resolution, reverse=True)[0]
+        print(f"Downloading video: {yt.title} | Resolution: {video_stream.resolution}")
+        video_stream.download(output_path=destination_folder)
+    except Exception as e:
+        return f"ERROR | {e}"
+
+    return f"Download Complete | Saved at {destination_folder}"
+
+if __name__ == "__main__":
+    url = "https://youtu.be/At5alroIsic"
+    dest = "./00_downloaded"
+    result = download_highest_quality(url, dest)
+    print(result)
+```
+### Setup environment variables in VSCode:
+> 1. set up environment variables in VSCode and then retrieve those variables in your Python code.
+>
+> Set Up Environment Variables in VSCode:
+1. Install the Python Extension in VSCode: If you haven't already, install the Python extension from the VSCode marketplace.
+2. Create an .env File: In the root of your project directory, create a file named .env. This is where you'll store your environment variables.
+For instance:
+```Makefile
+DB_USER=myUsername
+DB_PASS=myPassword
+```
+3. Update settings.json: Ensure that the Python extension in VSCode knows to use the .env file. Click on the gear icon (⚙️) in the lower left-hand corner > Settings or simply press Ctrl + ,. In the top-right corner of the settings tab, click on the {} icon to open the settings.json file. Add or update the following lines:
+```json
+"python.envFile": "${workspaceFolder}/.env",
+```
+> 2. Retrieve the Credentials in Your Python Code:
+1. Install the python-dotenv Library: Use pip to install the python-dotenv library which allows you to easily load environment variables from an .env file:
+```bash
+pip install python-dotenv
+```
+2. Use the Credentials in Python:
+```py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # This will load environment variables from .env file
+
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
+
+# Now you can use DB_USER and DB_PASS in your SQL connection code
+```
+> Important Notes:
+1. Keep your .env file secure: Do not commit the .env file to your version control system (like Git). Instead, add .env to your .gitignore file to ensure it doesn't get accidentally committed.
+2. Environment variables are generally in ALL CAPS: This is a convention to make them easily distinguishable from regular variables.
+3. Setting Environment Variables Directly: The above method is specific to VSCode's development environment. In a production setting, you'd usually set environment variables directly on your server or hosting platform.
+> Now, your Python script can access the database credentials without them being hardcoded, making your code more secure and modular!
+### Multiple projects within the same workspace in VSCode :
+> multiple projects within the same workspace in VSCode and each project has its own set of credentials, you can handle them by creating separate .env files for each project. Here's how to set it up:
+1. Organize Your Workspace:
+Ensure each project is in a separate folder within the workspace. Your workspace directory structure might look something like this:
+```lua
+/workspace
+|-- /project1
+|   |-- .env
+|   |-- main.py
+|
+|-- /project2
+|   |-- .env
+|   |-- main.py
+|
+| ... and so on
+```
+2. Create .env files:
+Within each project folder, create a .env file containing the credentials specific to that project:
+For /project1/.env:
+```Makefile
+DB_USER=user1
+DB_PASS=pass1
+```
+For /project2/.env:
+```makefile
+DB_USER=user2
+DB_PASS=pass2
+```
+3. Load Credentials in Python Scripts:
+Within each Python script, use the same method to load the environment variables:
+```py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # This will automatically load the .env file in the current directory
+
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
+```
+> When you run main.py within project1, it will use project1's .env file. Similarly, for project2, it'll use its respective .env.
+4. Working with VSCode:
+The Python extension for VSCode automatically detects the .env file in the directory of the currently opened file (i.e., if you open a file in project1, it uses the .env from project1). Ensure the setting "python.envFile": "${workspaceFolder}/.env" is set, as mentioned earlier. This allows for relative .env paths.
+5. Remember .gitignore:
+If you're using a version control system like Git, remember to add each .env file to the .gitignore to prevent accidentally sharing your credentials:
+```bash
+/project1/.env
+/project2/.env
+```
+> Summary: With this setup, each project within your workspace will have its own set of credentials stored in a separate .env file. When you run or debug a project, it will automatically use the correct credentials for that specific project.
+---
+> The setting "python.envFile": "${workspaceFolder}/.env" in the settings.json file is a general setting for VSCode's Python extension, and it works with the current directory of the active Python file.
+Here's what happens:
+1. The placeholder ${workspaceFolder} refers to the root of the currently opened folder in VSCode.
+2. When you open a Python file from a particular project (e.g., from project1), the context switches to that folder.
+3. Therefore, ${workspaceFolder} dynamically adjusts based on the currently active Python file's location.
+4. The Python extension then looks for an .env file in that location and loads it.
+So, if you have multiple projects in the same workspace, each with its own .env file, VSCode will automatically load the appropriate .env file when you're working on a file from that project.
+> You don't need to make any additional changes in the settings.json file for each individual project; the dynamic context-switching will handle it for you. Just make sure that each project has its own .env file with the necessary credentials.
+### General .env file that's shared across multiple projects:
+> If you want a general .env file that's shared across multiple projects within the same workspace, you can certainly do that. This can be useful if there are some common configurations or settings that many of your projects use.
+Here's how you can set it up:
+1. Create a General .env File:
+Place the general .env file at the root level of your workspace:
+```lua
+/workspace
+|-- general.env
+|-- /project1
+|   |-- main.py
+|
+|-- /project2
+|   |-- main.py
+|
+| ... and so on
+```
+2. Update the settings.json in VSCode:
+Modify the settings.json to point to the general.env file:
+```json
+"python.envFile": "${workspaceFolder}/general.env",
+```
+3. Loading Variables in Python:
+For projects that need the general environment variables, load them as you would normally:
+```py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # This will automatically load the general.env file
+
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
+```
+> Important Considerations:
+1. Overriding Values: If you also have project-specific .env files, and they contain variables with the same name as in the general .env file, you'll need to handle potential overriding of values. You could either load both .env files and ensure the correct order of loading, or avoid having overlapping variable names.
+2. Organization: Using a general .env file is useful for shared configurations, but it's important to remember which projects depend on it. Ensure proper documentation so that future maintenance is straightforward.
+3. Security: As always, don't commit sensitive information like database credentials. If your general.env contains such data, add it to .gitignore.
+> By using a general .env file, you can centralize configurations that are shared across projects, making it easier to manage and update them as needed.
+---
+> If you have some projects that share common credentials (via a general .env file) and other projects that have their own specific credentials, you'll want to set it up in such a way that VSCode and your Python scripts know when to use the general .env and when to use the project-specific .env.
+> Step-by-step Guide:
+1. Setting Up .env Files:
+a. Create a general.env at the root of your workspace for common credentials:
+```bash
+/workspace
+|-- general.env     # Contains shared credentials
+|-- /project1
+|   |-- .env        # Contains specific credentials for project1 (if any)
+|   |-- main.py
+|
+|-- /project2       # This project might use the shared credentials
+|   |-- main.py
+|
+| ... and so on
+```
+> In general.env:
+```makefile
+DB_USER=sharedUser
+DB_PASS=sharedPass
+```
+> In project1/.env (just an example if project1 has unique credentials):
+```makefile
+DB_USER=uniqueUser1
+DB_PASS=uniquePass1
+```
+2. Modify settings.json in VSCode:
+a. By default, make VSCode point to the general.env file:
+```json
+"python.envFile": "${workspaceFolder}/general.env",
+```
+> This means, whenever you run a Python file in VSCode and it doesn't find a project-specific .env, it will use the general.env.
+b. For projects with their own specific credentials, you can override the default setting at a folder level. In VSCode, there's a concept of workspace settings where you can specify settings for individual folders within a workspace.
+Here's how:
+Open your workspace settings in VSCode.
+In the settings editor, there's a section titled "Folder Settings" where you can select each folder and specify settings just for that folder.
+For project1, you'd add:
+```json
+"python.envFile": "${workspaceFolder}/project1/.env",
+```
+> This tells VSCode to use the .env file specific to project1 when working on files within that project.
+3. Loading Credentials in Python:
+The method to load credentials in your Python scripts remains the same:
+```py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
+```
+> When you run the script:
+If the script is in a project with its own .env, it will load that.
+If the script is in a project without a specific .env, it will default to the general.env.
+>
+> Notes:
+1. Ensure the .env files are correctly located in the project directories and the general.env at the workspace root.
+2. As always, add .env and general.env to .gitignore to prevent committing sensitive information.
+3. This method allows flexibility for future projects. If a new project uses shared credentials, it will automatically use general.env. If it needs unique credentials, just add a new .env within its folder.
+By following this setup, you can maintain shared credentials in a central location while also accommodating projects with unique credential needs.
+>
+> You can add the "python.envFile": "${workspaceFolder}/.env", setting within the settings block in your workspace configuration. Here's how it would look with your provided configuration:
+```json
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"terminal.integrated.profiles.linux": {
+
+			"bash": {
+				"path": "bash",
+				"icon": "terminal-bash"
+			},
+			"zsh": {
+				"path": "zsh"
+			},
+			"fish": {
+				"path": "fish"
+			},
+			"tmux": {
+				"path": "tmux",
+				"icon": "terminal-tmux"
+			},
+			"pwsh": {
+				"path": "pwsh",
+				"icon": "terminal-powershell"
+			}
+		},
+		"python.envFile": "${workspaceFolder}/general.env"
+	}
+}
+```
+> Here, I've added the "python.envFile": "${workspaceFolder}/general.env" setting within the settings block. It will specify that, by default, the Python extension should look for a general.env file at the root of your workspace to load environment variables.
 
 
 
