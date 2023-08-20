@@ -40,6 +40,7 @@
 25. [Setup environment variables in VSCode](#setup-environment-variables-in-vscode)
     - [Multiple projects within the same workspace in VSCode](#multiple-projects-within-the-same-workspace-in-vscode)
     - [General .env file that's shared across multiple projects](#general-env-file-thats-shared-across-multiple-projects)
+26. [Anaconda Commands](#anaconda-commands)
 
 
 ### Merge two dataframe:
@@ -1744,7 +1745,31 @@ By following this setup, you can maintain shared credentials in a central locati
 }
 ```
 > Here, I've added the "python.envFile": "${workspaceFolder}/general.env" setting within the settings block. It will specify that, by default, the Python extension should look for a general.env file at the root of your workspace to load environment variables.
-
-
+### Anaconda Commands:
+1. List All Environments:
+First, confirm that you indeed have environments with duplicate names.
+Open the Anaconda prompt or terminal and run:
+```bash
+conda info --envs
+```
+2. Rename the Environments:
+To avoid confusion, it's a good idea to rename these environments so each has a unique name.
+Use the following command to rename an environment:
+```bash
+conda create --name new_name --clone old_name
+```
+3. remove the old environment with the duplicate name:
+```bash
+conda remove --name old_name --all
+```
+4. create clones with different names like:
+```bash
+conda create --name myenv1 --clone myenv
+conda create --name myenv2 --clone myenv
+```
+5. remove the original:
+```bash
+conda remove --name myenv --all
+```
 
 
