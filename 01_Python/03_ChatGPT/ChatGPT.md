@@ -27,6 +27,14 @@
 20. [Convert QVD to Parquet](#convert-qvd-to-parquet)
 21. [Benefits of Parquet file](#benefits-of-parquet-file)
 22. [Pandas > Read Large Parquet files](#pandas--read-large-parquet-files)
+23. [SQL > Grant Access](#sql--grant-access)
+    - [View Access](#view-access)
+    - [Revoke View Access](#revoke-view-access)
+    - [Grant Execute Procedure](#grant-execute-procedure)
+    - [Grant Execute Procedure and remove other users](#grant-execute-procedure-and-remove-other-users)
+    - [Back The User Admin works again](#back-the-user-admin-works-again)
+    - [allow PowerBI_HQ to only execute the job](#allow-powerbi_hq-to-only-execute-the-job)
+    - [Restoring t_board_db to its original state](#restoring-t_board_db-to-its-original-state)
 
 
 ### Merge two dataframe:
@@ -937,6 +945,446 @@ combined_df = pd.concat(dataframes.values(), ignore_index=True)
 ```
 > This code reads each Parquet file one by one, stores the resulting DataFrame in a dictionary with keys like df1, df2, etc., and prints the column names for each file. Once all files are read, it concatenates the DataFrames in the dictionary into a single Pandas DataFrame.
 Keep in mind that this approach loads the entire combined data into memory as a single Pandas DataFrame. If the combined data is too large to fit in memory, you should consider using Dask for out-of-core processing or perform incremental writes to disk.
+---
+### SQL > Grant Access :
+> Below will indicate all search of Microsoft SQL Server Access:
+### View Access :
+> In Microsoft SQL Server, if you want a user to view the definition of a view but not modify it, you should grant them the VIEW DEFINITION permission on that specific view. This permission will allow the user to see the T-SQL code behind the view without being able to modify it.
+Here's how you can grant this permission:
+```sql
+USE [YourDatabaseName];
+GO
+GRANT VIEW DEFINITION ON [dbo].[YourViewName] TO [UserName];
+GO
+```
+> Replace [YourDatabaseName], [dbo].[YourViewName], and [UserName] with the appropriate names for your setup.
+After running this, the user will be able to see the view definition using tools like SQL Server Management Studio but won't be able to modify the view.
+---
+> If you want to grant the VIEW DEFINITION permission to a user for all views in a database, you can do so by granting the permission on the entire database. However, note that this will also allow the user to see the definition of other objects like stored procedures, functions, etc.
+Here's how you can grant VIEW DEFINITION for all objects in the database:
+```sql
+USE [YourDatabaseName];
+GO
+GRANT VIEW DEFINITION ON DATABASE::[YourDatabaseName] TO [UserName];
+GO
+```
+> Replace [YourDatabaseName] and [UserName] with the appropriate names for your setup.
+
+If you only want to grant permission for all views and not other objects, you'll need to script this out using a loop or cursor for each view in the database. Here's a basic example using a cursor:
+```sql
+USE [YourDatabaseName];
+GO
+
+DECLARE @ViewName NVARCHAR(500)
+DECLARE view_cursor CURSOR FOR 
+SELECT '[' + TABLE_SCHEMA + '].[' + TABLE_NAME + ']' 
+FROM INFORMATION_SCHEMA.VIEWS
+
+OPEN view_cursor
+FETCH NEXT FROM view_cursor INTO @ViewName
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC('GRANT VIEW DEFINITION ON ' + @ViewName + ' TO [UserName]')
+    FETCH NEXT FROM view_cursor INTO @ViewName
+END
+
+CLOSE view_cursor
+DEALLOCATE view_cursor
+GO
+```
+> Replace [YourDatabaseName] and [UserName] with the appropriate values for your setup. This script will grant VIEW DEFINITION permission for each view in the database to the specified user.
+### Revoke View Access:
+> If you mistakenly granted VIEW DEFINITION on the entire database and wish to revoke it, you can use the REVOKE statement.
+Here's how you can revoke the VIEW DEFINITION permission for the entire database:
+```sql
+USE [YourDatabaseName];
+GO
+REVOKE VIEW DEFINITION ON DATABASE::[YourDatabaseName] FROM [UserName];
+GO
+```
+> Replace [YourDatabaseName] and [UserName] with the appropriate names for your setup.
+This will remove the VIEW DEFINITION permission for the user on all objects in the database. If there were any specific objects (like certain views or tables) where the user had VIEW DEFINITION permission granted individually, those permissions would remain. If you want to ensure the user doesn't have VIEW DEFINITION on any object in the database, you'd have to revoke it for each object separately.
+### Grant Execute Procedure:
+> To allow a user to execute the stored procedure without giving them broader access, you'll want to grant them explicit EXECUTE permissions on the procedure. This way, the user can run the procedure and it will execute with the permissions of the procedure's owner (in this case, presumably t_board_db or whichever user created the procedure). This concept is called "ownership chaining".
+Here's how you can do this:
+
+1. Create the User:
+First, if you haven't created the new user yet, create the user in the database.
+```sql
+CREATE USER [UserName] WITHOUT LOGIN;
+```
+2. Grant Execute Permission:
+Grant this new user permission to execute the stored procedure.
+```sql
+GRANT EXECUTE ON [dbo].[PowerBI_CL_Daily] TO [UserName];
+```
+3. Ensure SQL Server Agent Permissions:
+Your procedure calls a job using msdb.dbo.sp_start_job. The user will need permission to execute this. 
+Generally, the SQL Server Agent roles can be used.
+```sql
+USE [msdb];
+EXEC sp_addrolemember N'SQLAgentUserRole', N'UserName'; 
+```
+> The SQLAgentUserRole is the least privileged of the SQL Server Agent fixed database roles. It allows members to execute and view their own jobs. If you have other security requirements, you might need to adjust the role membership or set up specific permissions.
+NOTE: When creating roles and users, always check your current setup and permissions, to ensure there's no unintended access or security lapses.
+---
+> Explained Above access :
+granting permissions to a new user won't impact the rights or permissions of the t_board_db admin user or any other users. The t_board_db user, if it's an admin or has a high privilege level, will retain all its permissions and capabilities.
+In the steps I provided:
+1. Creating a new user - This action only adds a user; it doesn't modify or impact existing users.
+2. Granting Execute Permission - This only gives the new user the ability to execute the specific stored procedure [dbo].[PowerBI_CL_Daily]. It doesn't change anything for other users or for the t_board_db user.
+3. SQL Server Agent Permissions - By giving the new user the SQLAgentUserRole role in the msdb database, you're just enabling them to start SQL Agent jobs that they own. This won't change the rights or permissions of the t_board_db user or any other existing users.
+
+> The key principle in SQL Server security (and in most database platforms) is that granting permissions to one user doesn't reduce or change the permissions of another user. Each user's permissions are managed independently.
+However, always be cautious and test any changes in a development or staging environment before applying them to production, just to ensure there are no unexpected behaviors or issues.
+---
+> If the job behind the stored procedure executes a CMD command (i.e., it's a CmdExec job step type in SQL Server Agent), there are a few additional considerations:
+1. Proxy Account: CmdExec job steps run under the context of the SQL Server Agent Service Account, unless a proxy account has been defined. A proxy account allows SQL Server Agent to execute the job step under a different Windows account.
+If you want to keep using the Service Account for this, ensure the SQL Server Agent service account has the necessary permissions to execute the CMD command.
+If you need a different security context, you'll need to create a proxy account. You'll then assign the necessary permissions to this proxy and ensure the CmdExec job step uses this proxy.
+2. Grant Permission to use Proxy (if used): If you are using a proxy account for the CmdExec step, ensure that your new user has permissions to use that proxy.
+```sql
+USE msdb;
+EXEC sp_grant_proxy_to_subsystem @proxy_name=N'YourProxyName', @subsystem_id=3; -- 3 is for CmdExec
+EXEC sp_grant_login_to_proxy @proxy_name=N'YourProxyName', @login_name=N'UserName';
+```
+3. Security Risks: Running CMD commands through SQL Server Agent introduces security risks, as it can expose the system to potential vulnerabilities. Ensure that the commands being run are safe, sanitized, and cannot be tampered with. Avoid constructing CMD commands using string concatenation from untrusted sources.
+4. Permissions: The account (either the SQL Server Agent Service Account or the proxy account) needs to have permissions on the OS level to execute the desired CMD commands. You might need to work with your system administrator to ensure these permissions are correctly set.
+
+> In conclusion, if your job is executing a CMD command, it's crucial to understand and validate the security context under which it's running and ensure that only trusted, authenticated users can initiate such jobs. It's also essential to audit and limit what the CMD command can do to prevent potential security risks.
+---
+### Grant Execute Procedure and remove other users:
+> To ensure that a new SQL Server user has access to run only the procedure [dbo].[PowerBI_CL_Daily] and nothing else, you'll need to do the following steps:
+1. Create a new login for the user.
+2. Create a new user based on the login.
+3. Grant execute permissions on the procedure to the user.
+> Here's how you can do it:
+1. Create a new login:
+```sql
+USE [master]
+GO
+CREATE LOGIN [YourNewLoginName] WITH PASSWORD = 'YourStrongPasswordHere';
+GO
+```
+2. Create a new user for your database:
+```sql
+USE [YourDatabaseName]
+GO
+CREATE USER [YourNewUserName] FOR LOGIN [YourNewLoginName];
+GO
+```
+3. Grant execute permissions on the procedure to the new user:
+```sql
+USE [YourDatabaseName]
+GO
+GRANT EXECUTE ON [dbo].[PowerBI_CL_Daily] TO [YourNewUserName];
+GO
+```
+> This will ensure that the new user can only execute the procedure and nothing else. But keep in mind:
+The procedure itself accesses the msdb database and the job SP_PowerBI_Daily_Board. So, the user needs the required permissions to start that job. If you want to limit the user's permissions further, you may need to grant the user role membership in SQLAgentUserRole in the msdb database which allows starting jobs owned by that user. But this has other implications so be careful.
+The procedure also reads from [sta].[T_FACT_CL_Daily_TXT], so the user will need at least SELECT permission on that table.
+You can handle the above by either granting the permissions directly or by encapsulating all required operations in the stored procedure and making sure the stored procedure runs with elevated permissions using WITH EXECUTE AS clause.
+Be careful while granting permissions, especially on system databases like msdb. Ensure you fully understand the implications of each permission you grant.
+---
+> If you want to ensure the user has the necessary permissions to execute the job and also read from the specified table, but nothing more, you'll need to handle the permissions at various levels.
+1. Give user role membership in SQLAgentUserRole in the msdb database:
+This role will allow your user to start jobs that they own.
+```sql
+USE [msdb]
+GO
+EXEC sp_addrolemember N'SQLAgentUserRole', N'YourNewUserName';
+GO
+```
+> To be able to execute the job, the job SP_PowerBI_Daily_Board should be owned by YourNewUserName or a way to execute as a different user should be established.
+2. Grant SELECT permission on the required table:
+```sql
+USE [YourDatabaseName]
+GO
+GRANT SELECT ON [sta].[T_FACT_CL_Daily_TXT] TO [YourNewUserName];
+GO
+```
+3. Ensure the Job Ownership:
+If you want this user to have the ability to run the job, you might want to ensure the job SP_PowerBI_Daily_Board is owned by the YourNewUserName. You can do this via the SQL Server Agent Jobs settings in SQL Server Management Studio or use T-SQL to change the owner.
+Note: Changing the owner of the job might have other implications depending on how the job is currently configured and used. Ensure you understand those implications before making changes.
+4. Additional Restrictions:
+You might want to ensure this user cannot create new jobs, schedules, etc. within the SQL Agent. The SQLAgentUserRole role is limited, but you should validate that the user can only do what's intended. Test thoroughly by logging in as the user and attempting various operations.
+> With these permissions in place, your new user should be able to execute the procedure, which in turn will start the job and query the table, but won't be able to do much else.
+> Always be careful when assigning permissions, and ensure you've restricted access adequately to meet security requirements.
+---
+> The @database_user_name parameter is not for sp_add_jobserver, but rather for sp_add_jobstep.
+> 
+> To give permissions to the specific user for running a SQL Agent Job, you can follow these steps:
+1. Ensure the user is a member of the SQLAgentUserRole in the msdb database:
+This allows the user to start and stop jobs they own.
+```sql
+USE [msdb]
+GO
+EXEC sp_addrolemember N'SQLAgentUserRole', N'YourNewUserName';
+GO
+```
+2. Change the ownership of the job:
+Make sure that SP_PowerBI_Daily_Board is owned by YourNewUserName.
+```sql
+USE [msdb]
+GO
+EXEC sp_update_job
+@job_name = N'SP_PowerBI_Daily_Board',
+@owner_login_name = N'YourNewLoginName';
+GO
+```
+> This should give your new user the permission to run the SP_PowerBI_Daily_Board job.
+Additionally, make sure you've already provided the necessary permissions as mentioned in the previous steps (execute permission on the stored procedure and select permission on the table).
+---
+> To run a SQL Agent Job step that uses the CmdExec job step type. For security reasons, SQL Server doesn't allow non-SysAdmins to run CmdExec steps directly, as these can execute arbitrary operating system commands.
+To address this, you can set up a proxy account and associate it with a credential that has the necessary permissions. Here are the steps:
+1. Create a Credential:
+A credential consists of the Windows username and password which will be used to run the CmdExec job steps.
+```sql
+USE [master]
+GO
+CREATE CREDENTIAL [YourCredentialName] 
+WITH IDENTITY = 'Domain\WindowsUsername', 
+SECRET = 'WindowsPassword';
+GO
+```
+> Replace 'Domain\WindowsUsername' with the Windows account you want to use and 'WindowsPassword' with the password for that account. This Windows account should have the necessary permissions to execute whatever the CmdExec step is trying to do.
+2. Create a Proxy:
+Once you've created a credential, you can then create a proxy that uses this credential.
+```sql
+USE [msdb]
+GO
+EXEC sp_add_proxy 
+@proxy_name = N'YourProxyName', 
+@credential_name = N'YourCredentialName', 
+@enabled = 1;
+GO
+```
+3. Associate the Proxy with CmdExec:
+After creating the proxy, you need to associate it with the subsystem (CmdExec in this case).
+```sql
+USE [msdb]
+GO
+EXEC sp_grant_proxy_to_subsystem 
+@proxy_name = N'YourProxyName', 
+@subsystem_id = 3;  -- 3 is for CmdExec
+GO
+```
+4. Grant the necessary SQL Server user the ability to use the proxy:
+```sql
+USE [msdb]
+GO
+EXEC sp_grant_login_to_proxy 
+@login_name = N'YourNewLoginName', 
+@proxy_name = N'YourProxyName';
+GO
+```
+5. Modify the SQL Agent Job step:
+Finally, modify the job step to use the proxy. You can do this via SQL Server Management Studio:
+    - Navigate to the SQL Server Agent -> Jobs -> Your Job -> Steps.
+    - Edit the step that's failing.
+    - In the "Run as" drop-down, select your proxy.
+    - Save changes.
+> You should now be able to run the job step as a non-SysAdmin user. Always ensure you are following security best practices when setting up credentials and proxies.
+### Back The User Admin works again:
+> Given the specific error message you received about the CmdExec step, and the changes you made, I'd suggest the following steps to correct the issue:
+1. Revert Job Owner to Original:
+If you know the original owner of the SP_PowerBI_Daily_Board job, revert back to that owner.
+```sql
+USE [msdb]
+GO
+EXEC sp_update_job
+@job_name = N'SP_PowerBI_Daily_Board',
+@owner_login_name = N'OriginalOwnerLoginName';
+GO
+```
+> Replace OriginalOwnerLoginName with the login name of the original owner.
+2. Remove from SQLAgentUserRole:
+Given that you added PowerBI_HQ to the SQLAgentUserRole, but the job now no longer belongs to them, remove the user from this role to ensure there's no unintended elevation of permissions:
+```sql
+USE [msdb]
+GO
+EXEC sp_droprolemember N'SQLAgentUserRole', N'PowerBI_HQ';
+GO
+```
+3. Revoke unnecessary permissions:
+Revoke any excessive permissions you might have granted:
+```sql
+USE msdb;
+REVOKE EXECUTE ON OBJECT::dbo.sp_start_job FROM PowerBI_HQ;
+REVOKE SELECT ON OBJECT::dbo.sysjobs FROM PowerBI_HQ;
+REVOKE SELECT ON OBJECT::dbo.sysjobactivity FROM PowerBI_HQ;
+```
+4. Drop the unnecessary role:
+```sql
+USE msdb;
+GO
+DROP ROLE db_jobexecutor;
+GO
+```
+5. Reconfigure Proxy:
+If the job still fails because it requires CmdExec steps to be run, and the original owner isn't a SysAdmin, you'll need to set up a proxy as described in the previous steps.
+6. Validate other Permissions:
+Ensure that the user PowerBI_HQ still has the necessary permissions to execute the stored procedure and query the desired tables.
+> Remember, permissions in SQL Server can be a bit intricate, especially when involving SQL Server Agent jobs. It's crucial to periodically review and understand the exact permissions required for specific tasks to avoid potential security vulnerabilities. Always test in a development environment before applying to production.
+### allow PowerBI_HQ to only execute the job:
+> You want to retain all permissions for t_board_db and only give PowerBI_HQ the permission to execute that specific job.
+>
+> If you want to allow PowerBI_HQ to only execute the job without the ability to perform other tasks, the best approach is using a combination of database roles and proxies.
+> Follow these steps:
+1. Ensure PowerBI_HQ has the necessary role in msdb:
+The SQLAgentUserRole in the msdb database will give the user permission to run jobs they own, but we can't change the job ownership here. We'll handle execution differently.
+```sql
+USE [msdb]
+GO
+EXEC sp_addrolemember N'SQLAgentUserRole', N'PowerBI_HQ';
+GO
+```
+2. Set Up a Credential and Proxy for Job Execution:
+If the job step requires elevated permissions or is of the type CmdExec, non-SysAdmin users won't be able to execute it directly. We'll create a credential and proxy to bypass this.
+1. Create a Credential:
+```sql
+USE [master]
+GO
+CREATE CREDENTIAL JobExecCredential 
+WITH IDENTITY = 'Domain\WindowsUsername', -- Windows account
+SECRET = 'WindowsPassword';
+GO
+```
+2. Create a Proxy Using the Credential:
+```sql
+USE [msdb]
+GO
+
+EXEC sp_add_proxy 
+@proxy_name = N'JobExecProxy', 
+@credential_name = N'JobExecCredential', 
+@enabled = 1;
+GO
+
+EXEC sp_grant_proxy_to_subsystem 
+@proxy_name = N'JobExecProxy', 
+@subsystem_id = 3;  -- 3 is for CmdExec
+GO
+
+EXEC sp_grant_login_to_proxy 
+@login_name = N'PowerBI_HQ', 
+@proxy_name = N'JobExecProxy';
+GO
+```
+3. Update the SQL Agent Job to Use the Proxy:
+In SQL Server Management Studio:
+    - Navigate to SQL Server Agent > Jobs > Your Job > Steps.
+    - Edit the step(s) that require elevated permissions.
+    - In the "Run as" drop-down, select JobExecProxy.
+    - Save changes.
+4. Grant PowerBI_HQ Execute on the Job:
+The safest way to grant PowerBI_HQ execute permission on a specific job without changing its ownership is through a stored procedure that encapsulates the sp_start_job command. This way, you can avoid potential unwanted permissions that might come from directly granting rights to start jobs.
+```sql
+USE [msdb]
+GO
+
+CREATE PROCEDURE Start_SpecificJob_For_PowerBI_HQ
+AS
+BEGIN
+    EXEC dbo.sp_start_job N'SP_PowerBI_Daily_Board';
+END;
+GO
+
+GRANT EXECUTE ON Start_SpecificJob_For_PowerBI_HQ TO PowerBI_HQ;
+GO
+```
+> Now, PowerBI_HQ can execute this stored procedure to start the job.
+Remember to replace 'Domain\WindowsUsername' and 'WindowsPassword' with the correct Windows account details that have necessary permissions to run the job's steps.
+This way, the user PowerBI_HQ will only be able to start the specific job and won't have other elevated permissions.
+---
+> The steps I provided are designed to add permissions for PowerBI_HQ without affecting the existing permissions or functionality of the t_board_db user or other aspects of your system.
+> To clarify:
+1. SQLAgentUserRole for PowerBI_HQ: This action only grants PowerBI_HQ certain permissions related to SQL Agent jobs. It doesn't impact any other users or their permissions.
+2. Credential and Proxy Creation: This action just establishes a way for non-SysAdmin users (like PowerBI_HQ) to run specific job types that would normally require elevated permissions. Creating these doesn't change or override the way jobs are currently run by t_board_db or any other users.
+3. Updating the SQL Agent Job to Use Proxy: This is necessary only if the job has steps that a non-SysAdmin user can't normally run (like CmdExec steps). If t_board_db is an admin user, it will still be able to run the job without any issues even with this change. The proxy just provides an avenue for users like PowerBI_HQ to run it.
+4. Stored Procedure for PowerBI_HQ: The specific stored procedure is just a wrapper around the sp_start_job system procedure. It doesn't change how the job is run, just how it's initiated. t_board_db can still run jobs directly or through any other existing mechanisms.
+> That said, it's always a good practice to:
+>
+> Backup: Before making any changes, especially related to permissions or configurations, ensure you have recent backups of your SQL Server system and databases.
+Test: If possible, test these changes in a development or staging environment before applying them to your production system.
+Monitor: After applying changes, monitor the system to ensure that everything is functioning as expected and there are no unexpected side effects.
+Always take care with permissions and configurations in SQL Server to ensure system security and integrity.
+### Restoring t_board_db to its original state:
+> If t_board_db is not visible under the users of msdb anymore, it's possible it was inadvertently dropped or its permissions were altered. Let's work on restoring t_board_db to its original state and ensuring that it remains an admin for that SQL Server.
+1. First, verify if t_board_db still exists as a login:
+```sql
+USE [master]
+GO
+SELECT * FROM sys.server_principals WHERE name = 't_board_db';
+```
+> If this returns a result, then the login still exists, and we just need to map it to msdb and other necessary databases. If it doesn't return a result, we need to recreate the login.
+2. If you need to recreate the t_board_db login (only do this if the above query did not return any results):
+```sql
+USE [master]
+GO
+CREATE LOGIN [t_board_db] WITH PASSWORD=N'YourPasswordHere', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
+GO
+```
+> Replace 'YourPasswordHere' with the appropriate password.
+3. Map the t_board_db login to the msdb database:
+```sql
+USE [msdb]
+GO
+CREATE USER [t_board_db] FOR LOGIN [t_board_db];
+```
+4. If t_board_db should have admin rights on the SQL Server instance, you should add it to the sysadmin server role:
+```sql
+USE [master]
+GO
+EXEC sp_addsrvrolemember 't_board_db', 'sysadmin';
+```
+5. Clean up PowerBI_HQ:
+If you want to undo the changes made to PowerBI_HQ, you can revoke the permissions and remove it from the roles:
+```sql
+USE [msdb]
+GO
+REVOKE EXECUTE ON OBJECT::dbo.sp_start_job FROM PowerBI_HQ;
+EXEC sp_droprolemember N'SQLAgentUserRole', N'PowerBI_HQ';
+DROP USER PowerBI_HQ;
+```
+6. Finally, always ensure that after making changes to permissions, you:
+    - Check application connectivity and functionality to ensure nothing is disrupted.
+    - Review SQL Server logs for any errors or warnings related to permissions or login issues.
+    - Regularly backup SQL Server logins and permissions as a part of your disaster recovery plan.
+> By following these steps, you should be able to restore t_board_db to its administrative status and clean up the changes made to PowerBI_HQ.
+---
+> The sysadmin role is not a database role; it's a server-level role. Therefore, you won't see it under the "Database Roles" for any specific database, including msdb. Instead, you'll find it under "Server Roles" in the SQL Server Management Studio (SSMS) Object Explorer at the instance level.
+The sp_addsrvrolemember stored procedure is used to add a login to a server-level role. The sysadmin role grants the highest level of privileges on the SQL Server instance, effectively giving administrative rights to the login on that SQL Server instance.
+If t_board_db was previously an administrator of the SQL Server instance, and you want to restore that status, then you should run the command.
+However, if you're not sure about the previous permissions for t_board_db, here's what you can do:
+1. Check Existing Server Roles for t_board_db:
+Before adding t_board_db to sysadmin, you can check which server roles it currently belongs to:
+```sql
+USE [master]
+GO
+EXEC sp_helpsrvrolemember @rolename = 'sysadmin';
+```
+> This will list all the members of the sysadmin role. If t_board_db is listed in the result, then it already has sysadmin rights. If it's not listed, and you're sure it needs to be an admin, then you can safely add it.
+2. Add to sysadmin Role:
+If you've determined that t_board_db should be in the sysadmin role, then you can proceed with the command:
+```sql
+USE [master]
+GO
+EXEC sp_addsrvrolemember 't_board_db', 'sysadmin';
+```
+> However, if you're uncertain or unsure, it's always a good practice to:
+Consult: Speak with any other DBAs or admins or check documentation to confirm the intended permissions for t_board_db.
+Backup: Ensure you have backups of your SQL Server and its configurations.
+Caution: If you're ever in doubt about executing a command, especially one that can grant elevated permissions, it's better to hold off and seek clarity.
+Always prioritize the security and integrity of your SQL Server environment.
+
+
+
+
+
+
+
 
 
 
