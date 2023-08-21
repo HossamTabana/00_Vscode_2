@@ -41,6 +41,8 @@
     - [Multiple projects within the same workspace in VSCode](#multiple-projects-within-the-same-workspace-in-vscode)
     - [General .env file that's shared across multiple projects](#general-env-file-thats-shared-across-multiple-projects)
 26. [Anaconda Commands](#anaconda-commands)
+27. [Read file Names in Directory](#read-file-names-in-directory)
+28. [SQL > Delete from Table](#sql--delete-from-table)
 
 
 ### Merge two dataframe:
@@ -1817,3 +1819,16 @@ conda activate my_env_name
 ```
 > Sharing: If you're sharing your .yml, ensure that any local paths or private channels are removed or documented so others can adjust as necessary.
 > Lastly, remember that while these practices can reduce the likelihood of issues, the world of software has many moving parts. It's always possible for new conflicts to arise. Periodically reviewing and updating your .yml file can help mitigate potential problems.
+### Read file Names in Directory:
+```py
+import os
+
+path = r'U:\RHH0T430 - REGION REPORTING\Review'
+for filename in os.listdir(path):
+    print(filename)
+```
+### SQL > Delete from Table :
+```sql
+DELETE FROM [PlanX].[sta].[T_FACT_SAP_DailyFX_CSV]
+WHERE RIGHT([DateFX], 8) = 'Mar-2023';
+```
