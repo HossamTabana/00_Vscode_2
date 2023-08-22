@@ -62,6 +62,8 @@
     3.  [Read YAML file](#read-yaml-file)
 33. [Athena](#athena)
     1.  [SUBSTR and SUBSTRING](#substr-and-substring)
+    2.  [Date and Year](#date-and-year)
+34. [Python > Copy files](#python--copy-files)
 
 
 ### Merge two dataframe:
@@ -2268,7 +2270,47 @@ FROM orders;
 > These queries will extract the last 4 characters from the right of the product_code column and return the result in a new column named product_suffix. Note that the number 3 in the LENGTH function is used because we want to extract the last 4 characters (4 - 1 = 3).
 
 [Back to Top](#top)
+### Date and Year:
+> This Athena query extracts the first 10 characters from the rft_date column, which likely represents a date in the format 'YYYY-MM-DD', and then parses it using the date_parse function to obtain the date value. To extract the year from this date value, you can use the year function.
+> 
+> Here's the updated query with the year function:
+```sql
+year(date_parse(SUBSTRING(rft_date, 1, 10),'%Y-%m-%d'))
+```
+> In Athena, you can use the date_parse function to convert a VARCHAR date string to a date. Since your date string is in the format 'YY-MM-DD', you can parse it using the following query:
+```sql
+date_parse('13-03-23', '%y-%m-%d')
+```
+> This query will convert the VARCHAR '13-03-23' to a date value. The format specifier '%y-%m-%d' is used to match the given date string format.
 
+[Back to Top](#top)
+### Python > Copy files
+> To copy all the QVD files from the src_folder to the dst_folder, you can modify the script as follows:
+```py
+import os
+import shutil
+
+src_folder = r'\\qs-fs-project-dev.aws-euc1.hlag.com\share\Business Administration\1_QVD_Extract\LSC_Allocation'
+dst_folder = r'\\ww.hl.lan\HH1\Groups\RHH0T430 - REGION REPORTING\QV Server\4.BA Controlling\1.Operational Cost Reporting\2.QVD\AM_Allocation'
+
+def copy_files(src_folder, dst_folder, file_extension):
+    # Iterate through the files in the source folder
+    for filename in os.listdir(src_folder):
+        # Check if the file has the desired extension
+        if filename.endswith(file_extension):
+            src_path = os.path.join(src_folder, filename)
+            dst_path = os.path.join(dst_folder, filename)
+
+            # Copy the file to the destination folder
+            shutil.copy(src_path, dst_path)
+            print(f'Copied file {filename} from {src_folder} to {dst_folder}')
+
+# Call the function to copy all QVD files from src_folder to dst_folder
+copy_files(src_folder, dst_folder, '.qvd')
+```
+> This script defines a copy_files function that takes the source folder, destination folder, and the desired file extension as its arguments. It iterates through the files in the source folder, checks if the file has the desired extension (in this case, .qvd), and copies the file to the destination folder. The function is then called with the appropriate arguments to copy all QVD files from src_folder to dst_folder.
+
+[Back to Top](#top)
 
 
 
