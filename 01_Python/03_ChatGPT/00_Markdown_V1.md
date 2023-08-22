@@ -2122,3 +2122,20 @@ Join_tt1320_tt1190_tt1210.write \
     .save()
 ```
 [Back to Top](#top)
+### Read all Parquet files in dbfs:
+> To read multiple Parquet files stored in a distributed file system (like HDFS, S3, DBFS, etc.) in Databricks as one DataFrame, you can specify the path to the directory containing those files. If the files are named sequentially as you mentioned (e.g., Pa0001, Pa0002, ...), and they all reside in the same directory, you can specify the directory path itself.
+Here's an example of how you can do this:
+```py
+# Path to the directory containing the Parquet files
+path = "dbfs:/path/to/your/directory/"
+
+# Read all Parquet files in the specified directory as one DataFrame
+df = spark.read.parquet(path)
+
+# Show the DataFrame
+df.show()
+```
+> Databricks uses Apache Spark under the hood, so when you specify the directory path to the read.parquet method, Spark will read all the Parquet files in that directory and combine them into a single DataFrame.
+Ensure you replace "dbfs:/path/to/your/directory/" with the actual path to your directory in the DBFS (Databricks File System) or whichever distributed file system you're using.
+
+[Back to Top](#top)
