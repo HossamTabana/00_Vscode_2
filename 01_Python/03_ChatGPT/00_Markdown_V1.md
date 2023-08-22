@@ -60,6 +60,8 @@
     1.  [Convert KEY](#convert-the-modified-private-key-back-to-standard-pem-format)
     2.  [Read Parquet files](#read-all-parquet-files-in-dbfs)
     3.  [Read YAML file](#read-yaml-file)
+33. [Athena](#athena)
+    1.  [SUBSTR and SUBSTRING](#substr-and-substring)
 
 
 ### Merge two dataframe:
@@ -2205,3 +2207,72 @@ print(data)
 > This will read the entire file regardless of its size. Again, I apologize for the confusion earlier, and I hope this helps!
 
 [Back to Top](#top)
+### Athena:
+> Below will indicate best practices of Athena scripts:
+
+[Back to Top](#top)
+### SUBSTR and SUBSTRING :
+> Athena does not natively support the LEFT() function as it uses Presto SQL. Instead, you can use the SUBSTR() or SUBSTRING() function to achieve the same result. Here's how you can do it:
+> 
+> Using SUBSTR():
+```sql
+SELECT SUBSTR(column_name, 1, 4) AS result
+FROM your_table_name;
+```
+> Using SUBSTRING():
+```sql
+SELECT SUBSTRING(column_name, 1, 4) AS result
+FROM your_table_name;
+```
+> Replace column_name with the name of the column containing the string you want to extract characters from, and your_table_name with the name of the table in your AWS Glue Data Catalog.
+> For example, if you have a table named orders with a column named product_code:
+> 
+> Using SUBSTR():
+```sql
+SELECT SUBSTR(product_code, 1, 4) AS product_prefix
+FROM orders;
+```
+> Using SUBSTRING():
+```sql
+SELECT SUBSTRING(product_code, 1, 4) AS product_prefix
+FROM orders;
+```
+> These queries will extract the first 4 characters from the left of the product_code column and return the result in a new column named product_prefix.
+> 
+> In AWS Athena, to extract characters from the right side of a string, you can use a combination of the LENGTH() and SUBSTR() or SUBSTRING() functions. Here's how you can do it:
+> 
+> Using SUBSTR():
+```sql
+SELECT SUBSTR(column_name, LENGTH(column_name) - 3) AS result
+FROM your_table_name;
+```
+> Using SUBSTRING():
+```sql
+SELECT SUBSTRING(column_name, LENGTH(column_name) - 3) AS result
+FROM your_table_name;
+```
+> Replace column_name with the name of the column containing the string you want to extract characters from, and your_table_name with the name of the table in your AWS Glue Data Catalog.
+> 
+> For example, if you have a table named orders with a column named product_code and you want to extract the last 4 characters:
+> 
+> Using SUBSTR():
+```sql
+SELECT SUBSTR(product_code, LENGTH(product_code) - 3) AS product_suffix
+FROM orders;
+```
+> Using SUBSTRING():
+```sql
+SELECT SUBSTRING(product_code, LENGTH(product_code) - 3) AS product_suffix
+FROM orders;
+```
+> These queries will extract the last 4 characters from the right of the product_code column and return the result in a new column named product_suffix. Note that the number 3 in the LENGTH function is used because we want to extract the last 4 characters (4 - 1 = 3).
+
+[Back to Top](#top)
+
+
+
+
+
+
+
+
