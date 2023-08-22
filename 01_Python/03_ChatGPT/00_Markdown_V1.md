@@ -21,7 +21,7 @@
 12. [Copy specific files](#copy-specific-files)
 13. [Complete code for creating Chatbot](#complete-code-for-creating-chatbot)
 14. [Reading Large CSV files in Pandas](#reading-large-csv-files-in-pandas)
-15. [Reading Large CSV files in Pandas and adjust Data Type](#reading-large-csv-files-in-pandas-and-adjust-data-type)
+15. [Reading Large CSV files in Pandas and Data Type](#reading-large-csv-files-in-pandas-and-adjust-data-type)
 16. [Pandas > Filter and Convert Datetime](#pandas--filter-and-convert-datetime)
 17. [SQL > Explain Locate and Position](#sql--explain-locate-and-position)
 18. [AWS > Position Function](#aws--position-function)
@@ -40,8 +40,8 @@
 24. [YouTube Download 1080](#youtube-download-1080)
     1.  [YouTube Download 720](#youtube-download-720)
 25. [Setup environment variables in VSCode](#setup-environment-variables-in-vscode)
-    1.  [Multiple projects within the same workspace in VSCode](#multiple-projects-within-the-same-workspace-in-vscode)
-    2.  [General .env file that's shared across multiple projects](#general-env-file-thats-shared-across-multiple-projects)
+    1.  [Multiple projects same workspace in VSCode](#multiple-projects-within-the-same-workspace-in-vscode)
+    2.  [General .env file that's across projects](#general-env-file-thats-shared-across-multiple-projects)
 26. [Anaconda Commands](#anaconda-commands)
 27. [Read file Names in Directory](#read-file-names-in-directory)
 28. [SQL > Delete from Table](#sql--delete-from-table)
@@ -55,8 +55,11 @@
     1.  [Final all views and jobs](#final-all-views-and-jobs)
     2.  [Identify triggers on a table](#identify-triggers-on-a-table)
     3.  [Find which stored procedures are used](#find-which-stored-procedures-are-used)
+    4.  [Dynamic return last two months](#dynamic-return-last-two-months)
 32. [DataBricks](#databricks)
     1.  [Convert KEY](#convert-the-modified-private-key-back-to-standard-pem-format)
+    2.  [Read Parquet files](#read-all-parquet-files-in-dbfs)
+    3.  [Read YAML file](#read-yaml-file)
 
 
 ### Merge two dataframe:
@@ -2086,6 +2089,28 @@ WHERE definition LIKE '%table_name%'
 Note that this query searches for the table name in the stored procedure definition text, so it may not find all references to the table. In particular, it will not find stored procedures that use dynamic SQL to reference the table.
 
 [Back to Top](#top)
+### Dynamic return last two months
+```sql
+DECLARE @CurrentMonth DATE = GETDATE()
+
+SELECT FORMAT(@CurrentMonth, 'yyyyMM') AS MonthInFormat
+UNION ALL
+SELECT FORMAT(DATEADD(MONTH, -1, @CurrentMonth), 'yyyyMM')
+UNION ALL
+SELECT FORMAT(DATEADD(MONTH, -2, @CurrentMonth), 'yyyyMM')
+ORDER BY MonthInFormat DESC
+```
+>
+```markdown
+MonthInFormat
+-------------
+202308
+202307
+202306
+```
+> This script produces the current month and the two previous months in descending order in a single column.
+
+[Back to Top](#top)
 ### DataBricks:
 > Below will indicate best practices of DataBricks scripts:
 
@@ -2137,5 +2162,46 @@ df.show()
 ```
 > Databricks uses Apache Spark under the hood, so when you specify the directory path to the read.parquet method, Spark will read all the Parquet files in that directory and combine them into a single DataFrame.
 Ensure you replace "dbfs:/path/to/your/directory/" with the actual path to your directory in the DBFS (Databricks File System) or whichever distributed file system you're using.
+
+[Back to Top](#top)
+### Read YAML file
+> The correct method for installing a Python library in Databricks is to use the Databricks Libraries UI or to use an initialization script to install the library when the cluster starts. Unfortunately, you can't install libraries directly from a Databricks notebook using dbutils as I suggested in the previous response.
+Here is how you can do it using the Libraries UI:
+1. In the sidebar, click the cluster name.
+2. Click the Libraries tab in the sidebar.
+3. Click Install New.
+4. Choose PyPI.
+5. Type pyyaml in the Package text box.
+6. Click Install.
+Once you've done this, you should be able to import the yaml module in your notebook:
+```py
+import yaml
+```
+> Here's the corrected way to read the content of the file:
+```py
+import yaml
+
+# Get file content as string
+file_content = dbutils.fs.head('dbfs:/FileStore/bia/allocator/archiv/__h.yaml')
+
+# Parse the YAML content to Python object
+data = yaml.safe_load(file_content)
+
+# Print the content
+print(data)
+```
+> dbutils.fs.head() will return the first 65,536 bytes (or 64 KiB) of the file as a string. If your YAML file is larger than this, you may need to read the file as a binary object using dbutils.fs.open() and read the content with python built-in file handling methods.
+> 
+> If you need to read a larger file, here's a sample way to do this:
+```py
+import yaml
+
+with dbutils.fs.open('dbfs:/FileStore/bia/allocator/archiv/__h.yaml') as f:
+  file_content = f.read()
+
+data = yaml.safe_load(file_content)
+print(data)
+```
+> This will read the entire file regardless of its size. Again, I apologize for the confusion earlier, and I hope this helps!
 
 [Back to Top](#top)
