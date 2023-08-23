@@ -61,12 +61,15 @@
     2.  [Read Parquet files](#read-all-parquet-files-in-dbfs)
     3.  [Read YAML file](#read-yaml-file)
     4.  [Create Incrmental Loading](#create-incrmental-loading)
+    5.  [Write csv to S3 Bucket](#write-csv-to-s3-bucket)
+    6.  [Write Parquet to S3 Bucket](#write-parquet-to-s3-bucket)
 33. [Athena](#athena)
     1.  [SUBSTR and SUBSTRING](#substr-and-substring)
     2.  [Date and Year](#date-and-year)
 34. [Python > Copy files](#python--copy-files)
 35. [Python > Dynamic Column Rename](#python--dynamic-column-rename)
 36. [Python > Rename file with date](#python--rename-file-with-date)
+37. [Alteryx > Read Parquet file](#alteryx--read-parquet-file)
 
 
 ### Merge two dataframe:
@@ -2277,6 +2280,40 @@ latest_new_data.write.format("parquet").mode("overwrite").save(S3_Path)
 latest_new_data.write.format("csv").mode("overwrite").option("header", "true").save(S3_Path_csv)
 ```
 [Back to Top](#top)
+### Write csv to S3 Bucket
+```py
+def write_data_to_s3(table, bucket, filename):
+    """
+    Writes dataframe as single csv to defined S3 bucket.
+    """
+    
+    table.coalesce(1).write.format("com.databricks.spark.csv").mode("overwrite").option("header", "true").save(f"{bucket}{filename}")
+    data_location = bucket + filename
+    files = dbutils.fs.ls(data_location)
+    csv_file = [x.path for x in files if x.path.endswith(".csv")][0]
+    dbutils.fs.mv(csv_file, data_location.rstrip('/') + ".csv")
+    dbutils.fs.rm(data_location, recurse = True)
+```
+[Back to Top](#top)
+### Write Parquet to S3 Bucket
+> the function to write to parquet by changing the data format from CSV to Parquet. You also have to adjust the file extension at the end. Here is the updated code:
+```py
+def write_data_to_s3(table, bucket, filename):
+    """
+    Writes dataframe as single parquet to defined S3 bucket.
+    """
+    
+    table.coalesce(1).write.format("parquet").mode("overwrite").option("header", "true").save(f"{bucket}{filename}")
+    data_location = bucket + filename
+    files = dbutils.fs.ls(data_location)
+    parquet_file = [x.path for x in files if x.path.endswith(".parquet")][0]
+    dbutils.fs.mv(parquet_file, data_location.rstrip('/') + ".parquet")
+    dbutils.fs.rm(data_location, recurse = True)
+```
+> Please note that the option "header" is generally not applicable in parquet format because parquet is a columnar format which always contains schema or header information.
+Also, bear in mind that writing to parquet format may not behave exactly as CSV format. For instance, when you use coalesce(1), it may not always create a single parquet file due to the nature of how the parquet format works. If you absolutely need a single file, consider writing the dataframe to a single file in a temporary location and then moving the file to the final location.
+
+[Back to Top](#top)
 ### Athena:
 > Below will indicate best practices of Athena scripts:
 
@@ -2428,5 +2465,22 @@ Please make sure to replace 'oldfile.txt' with your actual file name and ensure 
 Also, ensure the file you want to rename and the Python script are in the same directory, otherwise you will need to specify the full path for the file.
 
 [Back to Top](#top)
+### Alteryx > Read Parquet file
+> Use Python or R within Alteryx: Alteryx supports running Python and R scripts using the Python Tool or R Tool. You could use a similar script to the ones above within Alteryx to read in the parquet file and output a data frame.
+> 
+> Here's an example using the Python Tool:
+```py
+import pandas as pd
+import pyarrow.parquet as pq
 
+# Read the parquet file
+df = pd.read_parquet('yourfile.parquet')
 
+# Output data
+Alteryx.write(df, 1)
+```
+> Note: These methods may not work if you're dealing with very large parquet files, due to memory constraints. For very large datasets, you may need to use a big data processing tool such as Apache Spark to first convert your parquet file into a manageable size or format.
+> 
+> Finally, Alteryx may have added support for reading parquet files directly after my last update, so you might want to check the latest Alteryx documentation or contact Alteryx support for the most current information.
+
+[Back to Top](#top)
