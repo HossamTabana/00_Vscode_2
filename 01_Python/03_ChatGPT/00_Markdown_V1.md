@@ -66,6 +66,7 @@
     2.  [Date and Year](#date-and-year)
 34. [Python > Copy files](#python--copy-files)
 35. [Python > Dynamic Column Rename](#python--dynamic-column-rename)
+36. [Python > Rename file with date](#python--rename-file-with-date)
 
 
 ### Merge two dataframe:
@@ -2401,8 +2402,31 @@ output_file = os.path.join(output_folder, 'output_file.csv')
 df.to_csv(output_file, index=False)
 ```
 [Back to Top](#top)
+### Python > Rename file with date
+> You can rename a file in Python using the os module's rename() function. You can create today's date string using the datetime module. Here's how you can do it:
+```py
+import os
+from datetime import datetime
 
+# Current date as string in 'YYYYMMDD' format
+today_date = datetime.now().strftime('%Y%m%d')
 
+# Assuming your filename is 'oldfile.txt'
+old_file_name = 'oldfile.txt'
 
+# Extract the extension from the old filename
+file_extension = os.path.splitext(old_file_name)[1]
+
+# New filename will be 'file_YYYYMMDD.extension'
+new_file_name = 'file_' + today_date + file_extension
+
+# Rename the file
+os.rename(old_file_name, new_file_name)
+```
+> This code will rename 'oldfile.txt' to 'file_YYYYMMDD.txt', where 'YYYYMMDD' is today's date.
+Please make sure to replace 'oldfile.txt' with your actual file name and ensure that your Python script has the necessary permissions to rename the file.
+Also, ensure the file you want to rename and the Python script are in the same directory, otherwise you will need to specify the full path for the file.
+
+[Back to Top](#top)
 
 
