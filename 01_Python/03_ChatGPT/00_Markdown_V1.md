@@ -60,10 +60,12 @@
     1.  [Convert KEY](#convert-the-modified-private-key-back-to-standard-pem-format)
     2.  [Read Parquet files](#read-all-parquet-files-in-dbfs)
     3.  [Read YAML file](#read-yaml-file)
+    4.  [Create Incrmental Loading](#create-incrmental-loading)
 33. [Athena](#athena)
     1.  [SUBSTR and SUBSTRING](#substr-and-substring)
     2.  [Date and Year](#date-and-year)
 34. [Python > Copy files](#python--copy-files)
+35. [Python > Dynamic Column Rename](#python--dynamic-column-rename)
 
 
 ### Merge two dataframe:
@@ -2209,6 +2211,71 @@ print(data)
 > This will read the entire file regardless of its size. Again, I apologize for the confusion earlier, and I hope this helps!
 
 [Back to Top](#top)
+### Create Incrmental Loading:
+> First we need to load the original table then saved as delta:
+```py
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+# Load source data
+df = spark.sql("SELECT * FROM `sfa_dl_bronze_prod`.`fis2`.`db2prod_tt1850`")
+# Define the Delta table path
+delta_path = "dbfs:/FileStore/IBRAHHO/db2prod_tt1850_delta_final"
+# Write DataFrame to Delta format and save it
+df.write.format("delta").mode("overwrite").save(delta_path)
+```
+> Then now will do the incrmental and schedule the notebook:
+```py
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import max, col
+spark = SparkSession.builder.getOrCreate()
+# Load the original source data
+original_df = spark.sql("SELECT * FROM `sfa_dl_bronze_prod`.`fis2`.`db2prod_tt1850`")
+# Define the source Delta table path
+source_delta_path = "dbfs:/FileStore/IBRAHHO/db2prod_tt1850_delta_final"
+# Try to load the source Delta table, if not exists then initialize it
+try:
+    delta_df = spark.read.format("delta").load(source_delta_path)
+    # Get the latest timestamp in source Delta table
+    last_update_time = delta_df.agg(max("header__event_timestamp")).collect()[0][0]
+except:
+    # If it's the first time and the table doesn't exist, we initialize it with an old timestamp
+    last_update_time = "1970-01-01 00:00:00"
+# Filter original source data to get only new data
+new_data = original_df.filter(col("header__event_timestamp") > last_update_time)
+# If there's new data, append it to the source Delta table
+if new_data.count() > 0:
+    new_data.write.format("delta").mode("append").save(source_delta_path)
+# Load the updated source Delta data
+df = spark.read.format("delta").load(source_delta_path)
+# Define your target Delta table path
+target_delta_path = "dbfs:/FileStore/IBRAHHO/tt1850_Test_Incrmental_final"
+# Try to load the target delta table, if not exists then initialize it
+try:
+    latest_df2 = spark.read.format("delta").load(target_delta_path)
+    # Get the latest timestamp in target delta table
+    last_update_time_target = latest_df2.agg(max("header__event_timestamp")).collect()[0][0]
+except:
+    # If it's the first time and the table doesn't exist, we initialize it with an old timestamp
+    last_update_time_target = "1970-01-01 00:00:00"
+# Filter source data to get only new data 
+new_data_target = df.filter(col("header__event_timestamp") > last_update_time_target)
+# If there's new data, process it and append it to the delta table
+if new_data_target.count() > 0:
+    # Filter the latest time stamp
+    max_timestamp_df = new_data_target.groupBy("FK_TT1820CLIENT", "FK_TT1820ID_NUMBER", "FK_TT1830REL_NUMBE", "REL_NUMBER").agg(max("header__event_timestamp").alias("latest_timestamp"))
+    latest_new_data = new_data_target.join(max_timestamp_df, on=["FK_TT1820CLIENT", "FK_TT1820ID_NUMBER", "FK_TT1830REL_NUMBE", "REL_NUMBER"], how='inner').filter(new_data_target["header__event_timestamp"] == max_timestamp_df["latest_timestamp"])
+    
+    # Append new data to the delta table
+    latest_new_data.write.format("delta").mode("append").save(target_delta_path)
+# S3 Path
+S3_Path = "s3://052968007531-bia-analytics-zone-s3-eu-central-1/users/IBRAHHO/queries/tt1850_Incrmental_Logic/Parquet"
+S3_Path_csv = "s3://052968007531-bia-analytics-zone-s3-eu-central-1/users/IBRAHHO/queries/tt1850_Incrmental_Logic"
+# Write to S3 as parquet
+latest_new_data.write.format("parquet").mode("overwrite").save(S3_Path)
+# Write to S3 as csv
+latest_new_data.write.format("csv").mode("overwrite").option("header", "true").save(S3_Path_csv)
+```
+[Back to Top](#top)
 ### Athena:
 > Below will indicate best practices of Athena scripts:
 
@@ -2311,8 +2378,29 @@ copy_files(src_folder, dst_folder, '.qvd')
 > This script defines a copy_files function that takes the source folder, destination folder, and the desired file extension as its arguments. It iterates through the files in the source folder, checks if the file has the desired extension (in this case, .qvd), and copies the file to the destination folder. The function is then called with the appropriate arguments to copy all QVD files from src_folder to dst_folder.
 
 [Back to Top](#top)
+### Python > Dynamic Column Rename
+> rename the columns based on their position, you can modify the script as follows:
+```py
+import pandas as pd
+import os
 
+# Step 1: Read the original Excel file
+input_file = 'your_input_file.xlsx'
+df = pd.read_excel(input_file)
 
+# Step 2: Rename the columns based on their position
+cols = list(df.columns)
+cols[0] = 'HH1'
+cols[1] = 'HH2'
+
+df.columns = cols
+
+# Step 3: Convert the DataFrame to CSV and save in the destination folder
+output_folder = 'C:\\HO'
+output_file = os.path.join(output_folder, 'output_file.csv')
+df.to_csv(output_file, index=False)
+```
+[Back to Top](#top)
 
 
 
