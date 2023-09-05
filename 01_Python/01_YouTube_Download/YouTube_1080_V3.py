@@ -33,10 +33,11 @@ def download_highest_quality(youtube_url, destination_folder):
     return f"Download Complete | Saved at {final_filename}"
 
 if __name__ == "__main__":
-    url = "https://youtu.be/Q1kHG842HoI"
-    dest = "./00_downloaded"
+    url = "https://www.youtube.com/watch?v=dCRofZ1Ux_k"
+    dest = "./00_VSCODE_2/01_Python/01_YouTube_Download/00_downloaded"
     result = download_highest_quality(url, dest)
     print(result)
+
 
 
 
