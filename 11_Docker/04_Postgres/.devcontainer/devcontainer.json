@@ -2,7 +2,7 @@
   "name": "PostgreSQL & pgAdmin",
   "dockerComposeFile": "docker-compose.yml",
   "service": "postgres",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/",
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash"
   },

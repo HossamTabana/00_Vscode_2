@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: Welcome4$
+      POSTGRES_PASSWORD: testing1234
     ports:
       - "5432:5432"
     volumes:
@@ -14,8 +14,8 @@ services:
     image: dpage/pgadmin4
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: test@domain.local
-      PGADMIN_DEFAULT_PASSWORD: test1234
+      PGADMIN_DEFAULT_EMAIL: hossam.tabana@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: testing123
     ports:
       - "8080:80"
     depends_on:
