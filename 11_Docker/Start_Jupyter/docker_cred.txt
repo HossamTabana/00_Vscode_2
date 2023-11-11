@@ -1,0 +1,20 @@
+Copy Access Token
+When logging in from your Docker CLI client, use this token as a password. Learn more
+
+ACCESS TOKEN DESCRIPTION
+NHH10051
+ACCESS PERMISSIONS
+Read, Write, Delete
+To use the access token from your Docker CLI client:
+
+1. Run docker login -u hossamibrahim
+
+2. At the password prompt, enter the personal access token.
+
+
+dckr_pat_f7E8gZtavMmUsyoErqX44OHL3Z0
+
+
+dckr_pat_nTn5QLNPGkX25PPQDymaiiq7rdA
+
+dckr_pat_BqxZyXJJSkoFkfHBGvl4uAPjTTA

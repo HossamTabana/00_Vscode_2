@@ -1,0 +1,439 @@
+==============================================================================
+Databricks JDBC Driver Release Notes 
+==============================================================================
+
+The release notes provide details of enhancements, features, known issues, and
+workflow changes in Databricks JDBC Driver 2.6.34, as well as the version 
+history. 
+
+
+2.6.34 =======================================================================
+
+Released 2023-06-30
+
+ * [SPARKJ-661][SPARKJ-693] Updated third-party library
+
+   The connector has been upgraded with the following third-party libraries:
+   - Apache Arrow 9.0.0 (previously 7.0.0)
+   - Apache HttpClient 4.5.14 (previously 4.5.13)
+   - Apache HttpCore 4.4.16 (previously 4.4.14)
+   - Byte Buddy 1.14.5 (previously 1.14.0) 
+   - flatbuffers 23.5.26 (previously 1.12.0) 
+   - Google Guava 32.0.1 (previously 31.1)
+   - jackson-annotations-2.15.2 (previously 2.13.4)
+   - jackson-core-2.15.2 (previously 2.13.4)
+   - jackson-databind-2.15.2 (previously 2.13.4.2)
+   - log4j-api 2.20.0 (previously 2.17.1)
+   - log4j-core 2.20.0 (previously 2.17.1)
+   - log4j-slf4j-impl 2.20.0 (previously 2.17.1)
+   - lz4 1.8.0 (previously 1.7.1)
+   - netty-buffer 4.1.94.Final (previously 4.1.82.Final)
+   - netty-common 4.1.94.Final (previously 4.1.82.Final)
+   - slf4j 1.7.36 (previously 1.7.30)
+   - thrift 0.17.0 (previously 0.13.0)
+
+
+Resolved Issues
+The following issues have been resolved in Databricks JDBC Connector 2.6.34.
+
+ * [SPARKJ-622] The REMARKS column of the tables metadata does not populate 
+   with comments. 
+
+ * [SPARKJ-655] When a query fails to connect to the server, the connector 
+   does not clean up the unused threads.
+
+ * [SPARKJ-666] The connector improves error message handling. Honors SQLState 
+   and error code from the server.
+   The new error message format: "SQL State: 12345"
+
+ * [SPARKJ-667] When a resultset closure operation returns an error, the 
+   connector does not clean up the operation handle entries from the heartbeat
+   thread.
+
+ * [SPARKJ-676] The connector checks the server protocol version incorrectly.
+
+
+Known Issues 
+The following are known issues that you may encounter due to limitations in 
+the data source, the driver or an application. 
+
+ * [SPARKJ-654] In some cases, when using IBM JRE and the Arrow result set 
+   serialization feature, the driver handles the Unicode characters 
+   incorrectly.
+ 
+   As a workaround, set the EnableArrow property to 0 in the connection  
+   string.
+
+ * [SPARKJ-573] Issue when deserializing Apache Arrow data with Java JVMs 
+   version 11 or higher, due to compatibility issues. 
+   
+   As a workaround, if you encounter the "Error occurred while deserializing 
+   arrow data: sun.misc.Unsafe or java.nio.DirectByteBuffer.<init>(long, int) 
+   not available" error, add the follwing line:
+   
+   --add-opens java.base/java.nio=ALL-UNNAMED
+
+   For more information, see the Installation and Configuration Guide.
+
+ * [SPARKJ-330] Issue with date and timestamp before the beginning of the 
+   Gregorian calendar when connecting to Spark 2.4.4 or later, or versions 
+   previous to 3.0, with Arrow result set serialization.
+ 
+   When using Spark 2.4.4 or later, or versions previous to Spark 3.0, DATE 
+   and TIMESTAMP data before October 15, 1582 may be returned incorrectly if 
+   the server supports serializing query results using Apache Arrow. This 
+   issue should not impact most distributions of Apache Spark.
+
+   To confirm if your distribution of Spark 2.4.4 or later has been impacted 
+   by this issue, you can execute the following query:
+
+   SELECT DATE '1581-10-14'
+
+   If the result returned by the connector is 1581-10-24, then you are 
+   impacted by the issue. In this case, if your data set contains date and/or
+   timestamp data earlier than October 15, 1582, you can work around this 
+   issue by adding EnableArrow=0 in your connection URL to disable the Arrow
+   result set serialization feature. 
+
+ * [SPARKJ-267] The JDBC 4.0 version of the connector fails to connect to 
+   servers that require encryption using TLS 1.1 or later.
+
+   When you attempt to connect to the server, the connection fails and the
+   connector returns an SSL handshake exception. This issue occurs only when
+   you run the connector using Java Runtime Environment (JRE) 6.0. 
+
+   As a workaround, run the connector using JRE 7.0 or 8.0.
+
+ * When retrieving data from a BINARY column, a ClassCastException error 
+   occurs.
+
+   In Spark 1.6.3 or earlier, the server sometimes returns a 
+   ClassCastException error when attempting to retrieve data from a BINARY 
+   column.
+
+   This issue is fixed as of Spark 2.0.0.
+
+   For more information, see the JIRA issue posted by Apache named "When
+   column type is binary, select occurs ClassCastException in Beeline" at
+   https://issues.apache.org/jira/browse/SPARK-12143.
+
+
+Workflow Changes =============================================================
+
+The following changes may disrupt established workflows for the connector. 
+
+
+2.6.33 -----------------------------------------------------------------------
+
+ * [SPARKJ-646] Removed support for Java 7.0
+
+   Beginning with this release, the driver no longer supports Java 7.0. For 
+   a list of supported JDBC versions, see the Installation and Configuration 
+   Guide.
+
+
+2.6.29 -----------------------------------------------------------------------
+
+ * [SPARKJ-618] Renamed jar files
+
+   Beginning with this release, the following files have been renamed:
+   - SparkJDBC41.jar is now DatabricksJDBC41.jar
+   - SparkJDBC42.jar is now DatabricksJDBC42.jar
+
+
+2.6.21 -----------------------------------------------------------------------
+
+ * [SPARKJ-534] Renamed connection properties
+
+   Beginning with this release, the following connection properties have been 
+   renamed:
+   - ClusterAutostartRetry is now TemporarilyUnavailableRetry
+   - ClusterAutostartRetryTimeout is now TemporarilyUnavailableRetryTimeout
+
+
+2.6.20 -----------------------------------------------------------------------
+
+ * [SPARKJ-474] Updated catalog support 
+
+   When connecting to a server that supports multiple catalogs, the connector
+   no longer reports the catalog for schemas and tables as SPARK. Instead, the
+   catalog is the one reported by the Spark server. For more information, see
+   the Installation and Configuration Guide.
+   
+   
+2.6.19 -----------------------------------------------------------------------
+
+ * [SPARKJ-483] Removed third-party libraries
+
+   Beginning with this release, the connector no longer includes the ZooKeeper
+   and Jute libraries in the JAR file. 
+
+
+2.6.18 -----------------------------------------------------------------------
+
+ * [SPARKJ-296][SPARKJ-297] Removed support for 2.1
+
+   Beginning with this release, the connector no longer supports servers that
+   run Spark version 2.1. For information about the supported Spark versions,
+   see the Installation and Configuration Guide.
+
+ * [SPARKJ-288][SPARKJ-289] Removed support for JDBC 4.0 (Java 6)
+
+   Beginning with this release, the connector no longer supports JDBC 4.0 
+   (Java 6). For a list of supported JDBC versions, see the Installation and
+   Configuration Guide.
+
+
+2.6.11 -----------------------------------------------------------------------
+
+ * [SPARKJ-301] Removed support for Spark 1.5.2 and earlier, as well as 2.0
+
+   Beginning with this release, the driver no longer supports servers that run
+   any of the following Spark versions:
+   - Versions 1.5.2 and earlier
+   - Version 2.0
+
+   For information about the supported Spark versions, see the Installation 
+   and Configuration Guide.
+
+ * [SPARKJ-296][SPARKJ-298] Deprecated support for Spark 1.6 and 2.1
+
+   Beginning with this release, support for Spark versions 1.6 and 2.1 has
+   been deprecated. For information about the supported Spark versions, 
+   see the Installation and Configuration Guide.
+
+ * [SPARKJ-288] Deprecated support for JDBC 4.0 (Java 6)
+ 
+   Beginning with this release, support for JDBC 4.0 (Java 6) has been
+   deprecated. Support will be removed in a future release. For a list of
+   supported JDBC versions, see the Installation and Configuration Guide.
+
+
+Version History ==============================================================
+
+2.6.33 -----------------------------------------------------------------------
+
+Released 2023-02-10
+
+ * [SPARKJ-585] SQLPrimaryKeys and SQLForeignKeys support
+
+   The driver now supports SQLPrimaryKeys and SQLForeignKeys catalog 
+   functions when connecting to a server of a supported version.
+
+
+2.6.32 -----------------------------------------------------------------------
+
+Released 2022-11-04
+ 
+Resolved Issues
+The following issues have been resolved in Databricks JDBC Driver 2.6.32.
+
+ * [SPARKJ-627] When using cloud fetch, the driver does not clean up certain
+   resources properly.
+
+ * [SPARKJ-631] When libcurl logging is enabled, the driver leaks the URLs of
+   cloud fetch results.
+
+ * [SPARKJ-632] The credentials leaked by the driver are passed into error 
+   messages. 
+
+
+2.6.29 -----------------------------------------------------------------------
+
+Released 2022-07-27
+ 
+Resolved Issues
+The following issues have been resolved in Databricks JDBC Driver 2.6.29.
+
+ * [SPARKJ-614] After closing HTTP connections, the driver does not clean up
+   native threads. 
+ 
+ * [SPARKJ-611] In the Databricks license file, a Unicode replacement 
+   character ( � ) is displayed instead of an apostrophe ( ' ).
+
+ * [SPARKJ-611] The naming of the Apache license file (LICENSE.txt) caused
+   confusion.
+   
+   This issue has been resolved. LICENSE.txt has been renamed to 
+   ApacheLICENSE.txt.
+
+ * [SPARKJ-611] Documentation links were missing from the Databricks license
+   file. 
+
+   This issue has been resolved. Documentation links have been added to the
+   Databricks license file. 
+
+
+2.6.28 -----------------------------------------------------------------------
+
+Released 2022-07-12
+ 
+Resolved Issues
+The following issue has been resolved in Databricks JDBC Driver 2.6.28.
+
+ * [SPARKJ-592][SPARKJ-602] When using an HTTP proxy with Cloud Fetch enabled, 
+   the connector does not return large data set results 
+ 
+
+2.6.27 -----------------------------------------------------------------------
+
+Released 2022-06-10
+
+Enhancements & New Features
+
+ * [SPARKJ-567][SPARKJ-577][SPARKJ-595] Updated third-party libraries
+
+   The connector now uses the following third-party libraries:
+   - Apache Arrow 7.0.0
+   - Google FlatBuffers 1.12.0
+   - jackson-annotations-2.13.2 (previously 2.11.3)
+   - jackson-core-2.13.2 (previously 2.11.3)
+   - jackson-databind-2.13.2.2 (previously 2.11.3)
+   - netty-buffer 4.1.77.Final (previously 4.1.73.Final)
+   - netty-common 4.1.77.Final (previously 4.1.73.Final) 
+
+ * [SPARKJ-587] Updated license file
+
+   The license file in the connector JAR file has been updated.   
+
+ 
+Resolved Issues
+The following issues have been resolved in Databricks JDBC Driver 2.6.27.
+
+ * [SPARKJ-576] In some cases, when an HTTP connection has been active for a 
+   long period of time, the connector returns a NoHttpResponseException error.
+ 
+ * [SPARKJ-596] In some cases, unshaded Log4j classes in the connector JAR
+   file conflict with files deployed in the end user's environment. 
+ 
+   This issue has been resolved. The unshaded classes have been removed from 
+   the connector JAR file.
+   
+ * [SPARKJ-608] When using a DataSource class, the subprotocol names are
+   incorrect.
+
+
+2.6.25 -----------------------------------------------------------------------
+
+Released 2022-04-01
+
+Enhancements & New Features
+
+ * [SPARKJ-531] Return regular result sets for certain queries
+ 
+   You can now configure the connector to return regular result sets for 
+   certain queries. To do this, set the NonRowcountQueryPrefixes property to 
+   a comma-separated list of queries. For more information, see the 
+   Installation and Configuration Guide.
+ 
+ * [SPARKJ-489] New value for UseNativeQuery	
+ 
+   You can now configure the connector to automatically set the 
+   UseNativeQuery property to either 0 or 1, depending on the server 
+   capabilities. To do this, set the UseNativeQuery property to 2. For more 
+   information, see the Installation and Configuration Guide.
+
+ * [SPARKJ-528] Propagate SQLSTATE
+ 
+   When an error occurs during an API call to the server, the connector now 
+   propagates the SQLSTATE in the returned error exception. Previously, the 
+   server returned the SQLSTATE in the API call response.
+ 
+ * [SPARKJ-570] Enhanced wire protocol support
+ 
+   The connector now supports v5 and v6 of the wire protocol used for 
+   communication between the connector and the server.
+   
+
+2.6.22 -----------------------------------------------------------------------
+
+Released 2022-01-11
+
+Enhancements & New Features
+
+ * [SPARKJ-552] Updated log4j third-party libraries
+
+   The JDBC 4.2 version of the connector has been updated to version 2.17.1
+   of the log4j third-party libraries.
+
+   The JDBC 4.1 version of the connector has been updated to version 2.12.4
+   of the log4j third-party libraries.
+
+ * [SPARKJ-551] Removed Slf4j-log4j12 dependency
+
+   The connector no longer uses the Slf4j-log4j12 library.
+   
+
+2.6.21 -----------------------------------------------------------------------
+
+Released 2021-12-24
+
+Enhancements & New Features
+
+ * [SPARKJ-540] Updated log4j third-party libraries
+
+   The JDBC 4.2 version of the connector has been updated to version 2.17.0
+   of the log4j third-party libraries.
+
+   The JDBC 4.1 version of the connector has been updated to version 2.12.2
+   of the log4j third-party libraries. To address security vulnerabilities, do
+   one of the following: 
+   - In PatternLayout in the logging configuration, replace Context Lookups 
+     like ${ctx:loginId} or $${ctx:loginId} with Thread Context Map patterns 
+     (%X, %mdc, or %MDC). 
+   - Otherwise, in the configuration, remove references to Context Lookups 
+     like ${ctx:loginId} or $${ctx:loginId} where they originate from sources
+     external to the application such as HTTP headers or user input.
+
+ * [SPARKJ-532] Third-party library upgrade
+
+   The connector has been upgraded with the following third-party libraries:
+   - netty-buffer 4.1.72.Final (previously 4.1.65.Final)
+   - netty-common 4.1.72.Final (previously 4.1.65.Final)
+
+
+Resolved Issues
+The following issues have been resolved in Simba Spark JDBC Connector 2.6.21.
+
+ * [SPARKJ-437] The http.header connection properties are not correctly sent 
+   to the server.
+
+ * [SPARKJ-519] In some cases, the connector incorrectly removes the word 
+   SPARK from the table name in a query.
+
+ * [SPARKJ-538] The catalog filter for GetFunctions() behaves inconsistently 
+   with previous releases.
+
+
+2.6.20 -----------------------------------------------------------------------
+
+Released 2021-10-29
+
+Enhancements & New Features
+
+ * [SPARKJ-474] Multiple catalogs support
+
+   The connector now supports multiple catalogs when connecting to a server
+   that supports multiple catalogs.
+   
+   
+2.6.19 -----------------------------------------------------------------------
+
+Released 2021-08-27
+
+Enhancements & New Features
+
+ * [SPARKJ-405][SPARKJ-418] Query results support
+
+   You can now download query results from a cloud store, such as AWS or 
+   Azure, if the server supports the URL_BASED_SET result set type.
+
+ * [SPARKJ-508] Third-party library upgrade
+
+   The connector has been upgraded with the following third-party libraries:
+   - Apache Commons Codec 1.15 (previously 1.9)
+   - Apache HttpClient 4.5.13 (previously 4.5.3)
+   - Apache HttpCore 4.4.14 (previously 4.4.6)
+
+
+============================================================================== 

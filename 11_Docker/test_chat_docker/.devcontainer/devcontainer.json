@@ -1,0 +1,9 @@
+{
+  "name": "pyspark_dev_environment",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "pyspark-service",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=/Users/hossamtabana/downloads/data,target=/data,type=bind"
+  ]
+}

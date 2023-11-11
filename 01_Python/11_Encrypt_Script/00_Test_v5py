@@ -1,0 +1,33 @@
+from flask import Flask, jsonify
+import pandas as pd
+from cryptography.fernet import Fernet
+
+app = Flask(__name__)
+
+KEY_PATH = "key.key"
+ENCRYPTED_SCRIPT_PATH = "00_test.py.enc"
+
+def load_key_from_file(key_file):
+    with open(key_file, "rb") as keyfile:
+        key = keyfile.read()
+    return key
+
+def decrypt_file_to_memory(encrypted_file_path, key):
+    cipher = Fernet(key)
+    with open(encrypted_file_path, 'rb') as file:
+        encrypted_data = file.read()
+    decrypted_data = cipher.decrypt(encrypted_data)
+    return decrypted_data
+
+@app.route('/run_script', methods=['GET'])
+def run_script():
+    key = load_key_from_file(KEY_PATH)
+    decrypted_code = decrypt_file_to_memory(ENCRYPTED_SCRIPT_PATH, key)
+    locals_dict = {}
+    exec(decrypted_code, globals(), locals_dict)  # This should populate locals_dict
+    # Assuming decrypted_power.py has a function `generate_dataframe()`
+    df = locals_dict.get('generate_dataframe')()
+    return jsonify(df.to_dict(orient='records'))
+
+if __name__ == '__main__':
+    app.run(port=5000)

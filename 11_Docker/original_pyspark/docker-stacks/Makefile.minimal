@@ -1,0 +1,63 @@
+.PHONY: build-all
+
+# Use bash for inline if-statements in arch_patch target
+SHELL:=bash
+REGISTRY?=ibrahho
+OWNER?=jupyter
+
+ALL_IMAGES:= \
+    docker-stacks-foundation \
+    base-notebook \
+    minimal-notebook \
+    r-notebook \
+    julia-notebook \
+    scipy-notebook \
+    tensorflow-notebook \
+    datascience-notebook \
+    pyspark-notebook \
+    all-spark-notebook
+
+# Define the architectures you want to support
+ARCHITECTURES:=amd64 arm64
+
+# Enable BuildKit for Docker build
+export DOCKER_BUILDKIT:=1
+
+# https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+# https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+help:
+	@echo "jupyter/docker-stacks"
+	@echo "====================="
+	@echo "Replace % with a stack directory name (e.g., make build/minimal-notebook)"
+	@echo
+	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+build-all:
+	@docker buildx create --name multiarchbuilder --use
+	@for image in $(ALL_IMAGES); do \
+		docker buildx build --platform linux/amd64,linux/arm64 --tag $(REGISTRY)/$(OWNER)/$$image:latest --build-arg REGISTRY=$(REGISTRY) --build-arg OWNER=$(OWNER) -f images/$$image/Dockerfile .; \
+	done
+	@docker buildx rm multiarchbuilder
+
+check-outdated/%: ## check the outdated mamba/conda packages in a stack and produce a report
+    @TEST_IMAGE="$(REGISTRY)/$(OWNER)/$(notdir $@)" pytest tests/docker-stacks-foundation/test_outdated.py
+check-outdated-all: $(foreach I, $(ALL_IMAGES), check-outdated/$(I)) ## check all the stacks for outdated packages
+
+cont-clean-all: cont-stop-all cont-rm-all ## clean all containers (stop + rm)
+cont-stop-all: ## stop all containers
+	@echo "Stopping all containers ..."
+	-docker stop --time 0 $(shell docker ps --all --quiet) 2> /dev/null
+cont-rm-all: ## remove all containers
+	@echo "Removing all containers ..."
+	-docker rm --force $(shell docker ps --all --quiet) 2> /dev/null
+
+docs: ## build HTML documentation
+	sphinx-build -W --keep-going --color docs/ docs/_build/
+linkcheck-docs: ## check broken links
+	sphinx-build -W --keep-going --color -b linkcheck docs/ docs/_build/
+
+hook/%: ## run post-build hooks for an image
+	python3 -m tagging.write_tags_file --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --registry "$(REGISTRY)" --owner "$(OWNER)" && \
+	python3 -m tagging.write_manifest --short-image-name "$(notdir $@)" --hist-line-dir /tmp/jupyter/hist_lines/ --manifest-dir /tmp/jupyter/manifests/ --registry "$(REGISTRY)" --owner "$(OWNER)" && \
+	python3 -m tagging.apply_tags --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --platform "$(shell uname -m)" --registry "$(REGISTRY)" --owner "$(OWNER)"
+hook-all: $(foreach I, $(ALL_IMAGES), hook/$(I)) ## run post-build hooks for all images
