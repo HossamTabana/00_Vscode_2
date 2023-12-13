@@ -1,0 +1,401 @@
+<mxfile host="app.diagrams.net" modified="2023-12-12T15:39:56.677Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="sgg9HjYh5Kn5F6mz5gMn" version="22.1.7" type="google">
+  <diagram name="Pagina-1" id="FZ_qN5JcU96pNsKxG9cl">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-11" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;TWS&lt;br&gt;&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="3975" y="-1020" width="320" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-13" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;JOB in SSMS: PlanX_SSY_Result_CL_Scheme&lt;br&gt;&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="3940" y="-520" width="390" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-49" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;&lt;br&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;, &amp;quot;Segoe UI&amp;quot;, Helvetica, Verdana, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 600; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;0_Dailyload&lt;/span&gt;&lt;br&gt;&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1888" y="-440" width="380" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-33" value="&#xa;&lt;span style=&quot;color: rgb(223, 223, 223); font-family: &amp;quot;Open Sans&amp;quot;, Arial, Helvetica, sans-serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(69, 69, 69); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Update ACT SAP&lt;/span&gt;&#xa;&#xa;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" vertex="1" parent="1">
+          <mxGeometry x="970" y="-435" width="840" height="565" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-16" value="[TEC] - Extract and Reload Cl Scheme Entity [R], Relation [R] and mapping MTX" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=#000000;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="980" y="500" width="460" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-8" value="&#xa;&lt;span style=&quot;color: rgb(223, 223, 223); font-family: &amp;quot;Open Sans&amp;quot;, Arial, Helvetica, sans-serif; font-size: 20px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(69, 69, 69); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Mapping ACT CL Scheme [R] Exp &amp;amp; CR View&lt;/span&gt;&#xa;&#xa;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="-80" width="430" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-7" target="ILKa6WFnRM9_ADpn-chf-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-6" value="Result - SAP Data per CE, per PC" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="20" y="40" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-9" target="ILKa6WFnRM9_ADpn-chf-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-7" value="&#xa;&lt;br class=&quot;Apple-interchange-newline&quot;&gt;&lt;span style=&quot;color: rgba(0, 0, 0, 0.87); font-family: &amp;quot;Open Sans&amp;quot;, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;(V937) ACT SAP REP CL Scheme [R]&lt;/span&gt;&#xa;&#xa;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="55" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-12" target="ILKa6WFnRM9_ADpn-chf-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-9" value="&#xa;&lt;span style=&quot;color: rgba(0, 0, 0, 0.87); font-family: &amp;quot;Open Sans&amp;quot;, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;[TMP] ACT SAP + CL scheme [R]&lt;/span&gt;&#xa;&#xa;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="55" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-10" target="ILKa6WFnRM9_ADpn-chf-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-32" target="ILKa6WFnRM9_ADpn-chf-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-10" value="&lt;p&gt;&lt;/p&gt;&lt;div style=&quot;&quot;&gt;ACT SAP&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;horizontal=1;verticalAlign=middle;fillColor=default;labelPosition=center;verticalLabelPosition=middle;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="620" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-18" target="ILKa6WFnRM9_ADpn-chf-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-11" value="(V936) MTX - CL Scheme/CL Scheme [R]" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;horizontal=1;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="620" y="115" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-12" value="a*b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="75" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-20" target="ILKa6WFnRM9_ADpn-chf-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-18" value="[MTX] -&amp;nbsp; Mapping MTX 936 Identity CL scheme/CL scheme [R]" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="550" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-19" value="Extract &amp;amp;&lt;br&gt;Reload" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="540" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="ILKa6WFnRM9_ADpn-chf-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1570" y="605" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-20" value="CL SCHEME" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="565" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-25" value="&lt;br&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: &amp;quot;Helvetica Neue&amp;quot;, &amp;quot;Segoe UI&amp;quot;, Helvetica, Verdana, sans-serif; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Result PO - REP + VPR Settings&lt;/span&gt;&lt;br&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="525" width="230" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-26" value="&lt;p&gt;In this screen the user can create manually new items of the entity &quot;CL Scheme&quot;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="465" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-30" target="ILKa6WFnRM9_ADpn-chf-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-45" target="ILKa6WFnRM9_ADpn-chf-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-30" value="&lt;p&gt;&lt;/p&gt;&lt;div style=&quot;&quot;&gt;TMP FACT Cost Center Cost Element w CL Scheme&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;horizontal=1;verticalAlign=middle;fillColor=default;labelPosition=center;verticalLabelPosition=middle;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="-245" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-31" value="TEC Mapping Cost Center to SSY Relation" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;horizontal=1;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="-110" width="120" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-32" value="a*b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="-150" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;shape=link;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-43" target="ILKa6WFnRM9_ADpn-chf-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-47" target="ILKa6WFnRM9_ADpn-chf-43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-43" value="&lt;p&gt;&lt;/p&gt;&lt;div style=&quot;&quot;&gt;TMP FACT Cost Center Cost Element wo Version and Layer&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;horizontal=1;verticalAlign=middle;fillColor=default;labelPosition=center;verticalLabelPosition=middle;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="-405" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-44" value="TEC Mapping Cost Element to CL Scheme" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;horizontal=1;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="-270" width="120" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-45" value="a*b" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="-310" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-47" value="&#xa;&lt;span style=&quot;color: rgb(69, 69, 69); font-family: &amp;quot;Open Sans&amp;quot;, Arial, Helvetica, sans-serif; font-size: 15px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;FACT COSS&lt;/span&gt;&#xa;&#xa;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="-400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-50" value="SQL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="2090" y="-405" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ILKa6WFnRM9_ADpn-chf-51" target="ILKa6WFnRM9_ADpn-chf-47">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ILKa6WFnRM9_ADpn-chf-51" value="FACT COSS" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1980" y="-410" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-7" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;SSMS TABLES&lt;br&gt;&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="2370" y="-520" width="1380" height="780" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-13" target="ILKa6WFnRM9_ADpn-chf-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-13" value="dtm.V_FACT_COSS" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2610" y="-410" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-15" target="T5uWxNG0ixvLJwqt94e9-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-15" value="DTM.V_PRE_COSS" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2860" y="-410" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-16" target="T5uWxNG0ixvLJwqt94e9-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-16" value="DTM.V_PRE_COSS_YEAR" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="3100" y="-500" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-17" target="T5uWxNG0ixvLJwqt94e9-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-17" value="STA.T_FACT_COSS_CSV" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="3100" y="-350" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-18" target="T5uWxNG0ixvLJwqt94e9-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-18" value="sta.T_FACT_COSS_year" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="3330" y="-500" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-24" value="LEGENDA" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="30" y="-539" width="330" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-25" value="ENTITY" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="-379" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-26" value="CUBE" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="-469" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-27" value="DATAREADER" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="-479" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-28" value="SCREEN" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="-369" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-29" value="SQL TABLE" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="-269" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-32" target="T5uWxNG0ixvLJwqt94e9-30">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2330" y="-112" />
+              <mxPoint x="2330" y="-190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-30" target="ILKa6WFnRM9_ADpn-chf-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-30" value="FACT CL Mapping CostElement CLScheme" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1980" y="-230" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-31" value="SQL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="2090" y="-237.5" width="50" height="4.5" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-34" target="T5uWxNG0ixvLJwqt94e9-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-33" target="T5uWxNG0ixvLJwqt94e9-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-32" value="dtm.V_FACT_CL_Mapping_CostElement_CLScheme" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2440" y="-152" width="350" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-33" value="dtm.V_DIM_COST_ELEMENTS" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2870" y="-80" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-34" value="cor.T_ROLAP_CL_SCHEME_MAPPING_SAP_CL" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2870" y="-222" width="300" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-43" target="ILKa6WFnRM9_ADpn-chf-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-43" value="FACT CL Mapping CostCenter RelationSSY" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1970" y="-30" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-44" target="T5uWxNG0ixvLJwqt94e9-43">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2310" y="110" />
+              <mxPoint x="2310" y="25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-44" value="dtm.V_FACT_CL_Mapping_CostCenter_RelationSSY" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2420" y="70" width="350" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-45" target="T5uWxNG0ixvLJwqt94e9-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-45" value="dtm.V_DIM_COST_CENTERS" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="2860" y="70" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="T5uWxNG0ixvLJwqt94e9-46" target="T5uWxNG0ixvLJwqt94e9-45">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="T5uWxNG0ixvLJwqt94e9-46" value="sta.T_DIM_COST_ELEMENTS_BACKTRACKING_CSV" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="3220" y="70" width="360" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="XDUmtekeaizesNPrEmZ8-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4550" y="-305" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XDUmtekeaizesNPrEmZ8-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4500" y="-100" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XDUmtekeaizesNPrEmZ8-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="XDUmtekeaizesNPrEmZ8-13" target="T5uWxNG0ixvLJwqt94e9-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XDUmtekeaizesNPrEmZ8-13" value="sta.T_DIM_COST_ELEMENTS_BACKTRACKING_CSV" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="3210" y="-80" width="360" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-18" value="&lt;span style=&quot;background-color: rgb(0, 0, 0);&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;SOURCES&lt;br&gt;&lt;/font&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;labelBackgroundColor=none;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="4520" y="-520" width="420" height="780" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-20" target="eQwhChCvHmD-o0ucOsQN-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-20" value="F:\Data\SAP\ShipsystemResult\COSS.TXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="4610" y="-379" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-22" target="eQwhChCvHmD-o0ucOsQN-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-22" value="F:\Data\SAP\BW\SAP Data\DIM\CostElements_Backtracking_csv" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="4610" y="-110" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-25" target="eQwhChCvHmD-o0ucOsQN-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-25" target="eQwhChCvHmD-o0ucOsQN-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-25" value="F:\Data\SAP\BW\SAP Data\DIM\CostCenters_Backtracking_csv" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="4610" y="48" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-26" value="" style="group" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="3973.63" y="-109.5" width="302.73" height="177.5" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-27" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="eQwhChCvHmD-o0ucOsQN-26">
+          <mxGeometry width="302.7300000000002" height="177.50000000000003" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-28" value="SSIS Package: STG_Robot_SAP_PlanX.dtsx" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="eQwhChCvHmD-o0ucOsQN-26">
+          <mxGeometry x="51.51925201201158" y="66.59702007916574" width="197.27450450450462" height="44.30303803096883" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-29" value="Step 2: STG_Robot_SAP_PlanX" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="eQwhChCvHmD-o0ucOsQN-26">
+          <mxGeometry x="42.1291674174171" y="20.726594650205804" width="216.0625525525527" height="18.07870370370371" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-30" target="T5uWxNG0ixvLJwqt94e9-18">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3660" y="-334" />
+              <mxPoint x="3660" y="-460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-30" target="T5uWxNG0ixvLJwqt94e9-17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3660" y="-334" />
+              <mxPoint x="3660" y="-310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-30" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="3973.63" y="-417.6" width="302.73" height="167.2" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-31" value="SSIS Package: STG_SAP_SSY.dtsx" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="4025.151515151515" y="-346.2621932203392" width="197.27272727272725" height="48.521186440677965" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-32" value="Step 1: STG_SAP_SSY." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="4015.761515151515" y="-396.5" width="216.06060606060606" height="19.800000000000004" as="geometry" />
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-27" target="XDUmtekeaizesNPrEmZ8-13">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3710" y="-21" />
+              <mxPoint x="3710" y="-40" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eQwhChCvHmD-o0ucOsQN-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="eQwhChCvHmD-o0ucOsQN-27" target="T5uWxNG0ixvLJwqt94e9-46">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3710" y="-21" />
+              <mxPoint x="3710" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QUwEurAn27Hk0slp7WvK-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="QUwEurAn27Hk0slp7WvK-1" target="T5uWxNG0ixvLJwqt94e9-34">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3520" y="-180" />
+              <mxPoint x="3520" y="-180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QUwEurAn27Hk0slp7WvK-1" value="Board (ROLAP Cube. User does data entry in the cube. The informations inserted are stored in SSMS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="4610" y="-227" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-2" value="&lt;p&gt;In this procedure, the entity CL Scheme is extracted and then loaded on the cube v936 through the data reader: &quot;[MTX] -&amp;nbsp; Mapping MTX 936 Identity CL scheme/CL scheme [R]&quot;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="980" y="450" width="460" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-3" value="&lt;p&gt;The screen &quot;Result - SAP Data per CE, per PC&quot; has behind the cube V937&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="-10" width="370" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-4" value="&lt;p&gt;This procedure writes on the cube &quot;[TMP] ACT SAP + CL scheme [R]&quot; as as a result of the multiplication between the cube &quot;ACT SAP&quot; and the cube &quot;(V936) MTX - CL Scheme/CL Scheme [R]&quot;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="420" y="-130" width="430" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-5" value="&lt;p&gt;This procedure writes on the cube &quot;ACT SAP&quot; as as a result of the multiplication between the cube &quot;TMP FACT Cost Center Cost Element w CL Scheme&quot; and the cube &quot;TEC Mapping Cost Center to SSY Relation&quot;. The cube &quot;TMP FACT Cost Center Cost Element w CL Scheme&quot; is given by the multiplication of the cubes &quot;TMP FACT Cost Center Cost Element wo Version and Layer&quot; is given by the cube &quot;FACT COSS&quot;.&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="970" y="-500" width="840" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-6" value="&lt;p&gt;This procedure containes three SQL data readers which upload, respectively, the cubes: &quot;FACT COSS&quot;, &quot;TEC Mapping Cost Element to CL Scheme&quot; and &quot;TEC Mapping Cost Center to SSY Relation&quot;, reading from the tables on the right.&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1888" y="-520" width="382" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="Df8fQLg9ERCvJYKjYboe-11" target="Df8fQLg9ERCvJYKjYboe-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="l7FQgDupmgwMUXYXbJyz-6" target="eQwhChCvHmD-o0ucOsQN-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Df8fQLg9ERCvJYKjYboe-12" target="Df8fQLg9ERCvJYKjYboe-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-12" value="XXC1D005.bat" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4075" y="-905" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-14" value="PlanXCloud_import_COSSCOSR.bat" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4030" y="-780" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Df8fQLg9ERCvJYKjYboe-18" value="TWS launches the batch &quot;XXC1D005&quot; in the folder&amp;nbsp;KFICWPNXDBSP01\F:\TWS which launches another batch called &quot;PlanXCloud_import_COSSCOSR.bat&quot; in the folder KFICWPNXDBSP01\F:\Job&lt;br&gt;&amp;nbsp;which invokes the job &quot;PlanX_SSY_Result_CL_Scheme&quot; in SSMS." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="3973.63" y="-1140" width="316.37" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-5" value="TWS moves the file from the SAP server to the&amp;nbsp;KFICWPNXDBSP01 server" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="4440" y="-1000" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="l7FQgDupmgwMUXYXbJyz-6" target="Df8fQLg9ERCvJYKjYboe-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="l7FQgDupmgwMUXYXbJyz-6" target="eQwhChCvHmD-o0ucOsQN-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="l7FQgDupmgwMUXYXbJyz-6" target="eQwhChCvHmD-o0ucOsQN-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-6" value="xxxxxx.bat" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4075" y="-1000" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="l7FQgDupmgwMUXYXbJyz-10" value="The following tables are loaded in SSMS" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="2370" y="-555" width="280" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
